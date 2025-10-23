@@ -1,4 +1,4 @@
-package com.perfumeria.model;
+package com.perfumeria.modeles;
 
 import java.time.LocalDateTime;
 import java.util.List;
