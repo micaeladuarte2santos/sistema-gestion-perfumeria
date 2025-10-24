@@ -1,4 +1,4 @@
-package com.perfumeria.modeles;
+package com.perfumeria.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "proveedores")
-public class Proveedor {
+@Table(name = "categorias")
+public class CategoriaProducto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-    private String telefono;
-    private String email;
 }

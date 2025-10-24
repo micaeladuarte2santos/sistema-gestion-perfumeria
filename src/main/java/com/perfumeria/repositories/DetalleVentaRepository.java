@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.perfumeria.modeles.DetalleVenta;
-import com.perfumeria.modeles.Producto;
-import com.perfumeria.modeles.Venta;
+import com.perfumeria.models.DetalleVenta;
+import com.perfumeria.models.Producto;
+import com.perfumeria.models.Venta;
 
 import java.util.List;
 

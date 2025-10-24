@@ -1,4 +1,4 @@
-package com.perfumeria.modeles;
+package com.perfumeria.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -2,9 +2,9 @@ package com.perfumeria.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.perfumeria.modeles.CategoriaProducto;
-import com.perfumeria.modeles.Producto;
-import com.perfumeria.modeles.Proveedor;
+import com.perfumeria.models.CategoriaProducto;
+import com.perfumeria.models.Producto;
+import com.perfumeria.models.Proveedor;
 
 import java.util.List;
 import java.util.Optional;
