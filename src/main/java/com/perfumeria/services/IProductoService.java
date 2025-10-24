@@ -1,0 +1,13 @@
+package com.perfumeria.services;
+
+import java.util.List;
+import com.perfumeria.models.Producto;
+
+public interface IProductoService {
+
+    Producto crearProducto(Producto producto);
+    List<Producto> listarProductos();
+    Producto obtenerPorCodigoBarras(String codigoBarras);
+    List<Producto> listarPorCategoria(Long categoriaId);
+
+}
