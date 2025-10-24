@@ -9,5 +9,5 @@ public interface IProductoService {
     List<Producto> listarProductos();
     Producto obtenerPorCodigoBarras(String codigoBarras);
     List<Producto> listarPorCategoria(Long categoriaId);
-
+    void eliminarProducto(Long id);
 }

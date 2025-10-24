@@ -36,4 +36,11 @@ public class ProductoController {
     public ResponseEntity<List<Producto>> listarPorCategoria(@PathVariable Long categoriaId) {
         return ResponseEntity.ok(productoService.listarPorCategoria(categoriaId));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarProducto(@PathVariable Long id) {
+        productoService.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

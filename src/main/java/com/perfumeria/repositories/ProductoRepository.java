@@ -13,10 +13,18 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     
     Optional<Producto> findByCodigoBarras(String codigoBarras);
     
+    Optional<Producto> findByCodigoBarrasAndActivoTrue(String codigoBarras);
+
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
-    
+    List<Producto> findByNombreContainingIgnoreCaseAndActivoTrue(String nombre);
+
     List<Producto> findByCategoriaId(Long categoriaId);
-    
+    List<Producto> findByCategoriaIdAndActivoTrue(Long categoriaId);
+
     List<Producto> findByProveedor(Proveedor proveedor);
+    List<Producto> findByProveedorAndActivoTrue(Proveedor proveedor);
+
+    List<Producto> findByActivoTrue();
+
 
 }

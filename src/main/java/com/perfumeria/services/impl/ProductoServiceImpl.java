@@ -29,24 +29,34 @@ public class ProductoServiceImpl implements IProductoService{
     public Producto crearProducto(Producto producto) {
         productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new RuntimeException("Ya existe un producto con el mismo código de barras");});
         categoriaRepository.findById(producto.getCategoria().getId()).orElseThrow(() -> new RuntimeException("La categoría especificada no existe"));
+        producto.setActivo(true);
         return productoRepository.save(producto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Producto> listarProductos() {
-        return productoRepository.findAll();
+        return productoRepository.findByActivoTrue();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Producto obtenerPorCodigoBarras(String codigoBarras) {
-        return productoRepository.findByCodigoBarras(codigoBarras).orElseThrow(() -> new RuntimeException("No se encontró el producto con ese código de barras"));
+        return productoRepository.findByCodigoBarrasAndActivoTrue(codigoBarras).orElseThrow(() -> new RuntimeException("No se encontró el producto con ese código de barras"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Producto> listarPorCategoria(Long categoriaId) {
-        return productoRepository.findByCategoriaId(categoriaId);
+        return productoRepository.findByCategoriaIdAndActivoTrue(categoriaId);
     }
+
+    @Override
+    @Transactional
+    public void eliminarProducto(Long id) {
+        Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("No se encontró el producto con id" ));
+        producto.setActivo(false);
+        productoRepository.save(producto);
+    }
+
 }
