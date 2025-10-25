@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -67,9 +66,10 @@ public class VentaServiceImpl implements IVentaService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Venta> findById(Long id) {
-        return ventaRepository.findById(id);
+    public Venta findById(Long id) {
+        return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta inexistente"));
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -80,12 +80,11 @@ public class VentaServiceImpl implements IVentaService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta inexistente"));
 
         if (venta.getDetalles() != null) {
             for (DetalleVenta dv : venta.getDetalles()) {
-                Producto p = productoRepository.findById(dv.getProducto().getId())
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado al eliminar venta"));
+                Producto p = productoRepository.findById(dv.getProducto().getId()).orElseThrow(() -> new RuntimeException("Producto no encontrado al eliminar venta"));
                 p.setStock(p.getStock() + dv.getCantidad());
                 productoRepository.save(p);
             }
