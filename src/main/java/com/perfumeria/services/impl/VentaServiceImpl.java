@@ -7,6 +7,7 @@ import com.perfumeria.repositories.DetalleVentaRepository;
 import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.VentaRepository;
 import com.perfumeria.services.IVentaService;
+import com.perfumeria.models.EstadoVenta;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class VentaServiceImpl implements IVentaService {
     public Venta createVenta(Venta venta) {
 
         venta.setFecha(LocalDateTime.now());
+        venta.setEstado(EstadoVenta.PENDIENTE);
+        
         double totalVenta = 0.0;
         Venta ventaGuardada = ventaRepository.save(venta);
 
@@ -51,6 +54,7 @@ public class VentaServiceImpl implements IVentaService {
             // calcula el subtotal
             double subtotal = producto.getPrecio() * detalle.getCantidad();
             detalle.setSubtotal(subtotal);
+            detalle.setProducto(producto);
             detalle.setVenta(ventaGuardada);
 
             detalleVentaRepository.save(detalle);
