@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.perfumeria.models.Venta;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,5 +16,11 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
     
     @Query("SELECT v FROM Venta v WHERE DATE(v.fecha) = DATE(:fecha)")
     List<Venta> findByFecha(@Param("fecha") LocalDateTime fecha);
+
+    @Query("SELECT v FROM Venta v WHERE MONTH(v.fecha) = :mes AND YEAR(v.fecha) = :anio")
+    List<Venta> findByMes(@Param("mes") int mes, @Param("anio") int anio);
+
+    @Query("SELECT v FROM Venta v WHERE YEAR(v.fecha) = :anio")
+    List<Venta> findByAnio(@Param("anio") int anio);
     
 }

@@ -93,5 +93,16 @@ public class VentaServiceImpl implements IVentaService {
         ventaRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Venta> findByMes(int mes, int anio) {
+        return ventaRepository.findByMes(mes, anio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Venta> findByAnio(int anio) {
+        return ventaRepository.findByAnio(anio);
+    }
 
 }

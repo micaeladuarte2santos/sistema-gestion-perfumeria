@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,5 +46,15 @@ public class VentaController {
     public ResponseEntity<Void> deleteVenta(@PathVariable Long id) {
         ventaService.deleteById(id);
         return ResponseEntity.noContent().build(); 
+    }
+
+    @GetMapping("/mes")
+    public ResponseEntity<List<Venta>> getVentasPorMes(@RequestParam int mes, @RequestParam int anio) {
+        return ResponseEntity.ok(ventaService.findByMes(mes, anio));
+    }
+
+    @GetMapping("/anio")
+    public ResponseEntity<List<Venta>> getVentasPorAnio(@RequestParam int anio) {
+        return ResponseEntity.ok(ventaService.findByAnio(anio));
     }
 }
