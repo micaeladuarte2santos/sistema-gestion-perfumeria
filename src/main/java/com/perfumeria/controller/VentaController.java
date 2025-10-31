@@ -6,6 +6,7 @@ import com.perfumeria.models.Venta;
 import com.perfumeria.services.impl.VentaServiceImpl;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,21 @@ public class VentaController {
     @GetMapping("/anio")
     public ResponseEntity<List<Venta>> getVentasPorAnio(@RequestParam int anio) {
         return ResponseEntity.ok(ventaService.findByAnio(anio));
+    }
+
+    @GetMapping("/recaudacion/dia")
+    public ResponseEntity<Double> getRecaudacionPorDia(@RequestParam String fecha) {
+        LocalDate date = LocalDate.parse(fecha);
+        return ResponseEntity.ok(ventaService.getRecaudacionPorDia(date));
+    }
+
+    @GetMapping("/recaudacion/mes")
+    public ResponseEntity<Double> getRecaudacionPorMes(@RequestParam int mes, @RequestParam int anio) {
+        return ResponseEntity.ok(ventaService.getRecaudacionPorMes(mes, anio));
+    }
+
+    @GetMapping("/recaudacion/anio")
+    public ResponseEntity<Double> getRecaudacionPorAnio(@RequestParam int anio) {
+        return ResponseEntity.ok(ventaService.getRecaudacionPorAnio(anio));
     }
 }

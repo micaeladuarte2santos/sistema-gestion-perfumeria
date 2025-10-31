@@ -12,8 +12,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -103,6 +106,24 @@ public class VentaServiceImpl implements IVentaService {
     @Transactional(readOnly = true)
     public List<Venta> findByAnio(int anio) {
         return ventaRepository.findByAnio(anio);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Double getRecaudacionPorDia(LocalDate fecha) {
+        return Optional.ofNullable(ventaRepository.getRecaudacionPorDia(fecha)).orElse(0.0);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Double getRecaudacionPorMes(int mes, int anio) {
+        return Optional.ofNullable(ventaRepository.getRecaudacionPorMes(mes, anio)).orElse(0.0);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Double getRecaudacionPorAnio(int anio) {
+        return Optional.ofNullable(ventaRepository.getRecaudacionPorAnio(anio)).orElse(0.0);
     }
 
 }
