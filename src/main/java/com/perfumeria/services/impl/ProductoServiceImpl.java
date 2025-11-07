@@ -1,17 +1,15 @@
 package com.perfumeria.services.impl;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.perfumeria.exception.CategoriaNotFoundException;
+import com.perfumeria.exception.ProductoNotFoundException;
 import com.perfumeria.models.Producto;
 import com.perfumeria.repositories.CategoriaProductoRepository;
 import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.services.IProductoService;
-
 import lombok.AllArgsConstructor;
 
 @Service
@@ -28,7 +26,7 @@ public class ProductoServiceImpl implements IProductoService{
     @Transactional
     public Producto crearProducto(Producto producto) {
         productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new RuntimeException("Ya existe un producto con el mismo código de barras");});
-        categoriaRepository.findById(producto.getCategoria().getId()).orElseThrow(() -> new RuntimeException("La categoría especificada no existe"));
+        categoriaRepository.findById(producto.getCategoria().getId()).orElseThrow(() -> new CategoriaNotFoundException(producto.getCategoria().getId()));
         producto.setActivo(true);
         return productoRepository.save(producto);
     }
@@ -42,7 +40,7 @@ public class ProductoServiceImpl implements IProductoService{
     @Override
     @Transactional(readOnly = true)
     public Producto obtenerPorCodigoBarras(String codigoBarras) {
-        return productoRepository.findByCodigoBarrasAndActivoTrue(codigoBarras).orElseThrow(() -> new RuntimeException("No se encontró el producto con ese código de barras"));
+        return productoRepository.findByCodigoBarrasAndActivoTrue(codigoBarras).orElseThrow(() -> new ProductoNotFoundException("No se encontró el producto con código de barras: " + codigoBarras));
     }
 
     @Override
@@ -54,7 +52,7 @@ public class ProductoServiceImpl implements IProductoService{
     @Override
     @Transactional
     public void eliminarProducto(Long id) {
-        Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("No se encontró el producto con id" ));
+        Producto producto = productoRepository.findById(id).orElseThrow(() -> new ProductoNotFoundException(id));
         producto.setActivo(false);
         productoRepository.save(producto);
     }

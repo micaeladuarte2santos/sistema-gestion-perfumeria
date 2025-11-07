@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perfumeria.exception.ProveedorNotFoundException;
 import com.perfumeria.models.Proveedor;
 import com.perfumeria.repositories.ProveedorRepository;
 import com.perfumeria.services.IProveedorService;
@@ -37,8 +38,7 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Override
     @Transactional
     public void eliminarProveedor(Long id) {
-        Proveedor proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        Proveedor proveedor = proveedorRepository.findById(id).orElseThrow(() -> new ProveedorNotFoundException(id));
         proveedor.setActivo(false);
         proveedorRepository.save(proveedor);
     }

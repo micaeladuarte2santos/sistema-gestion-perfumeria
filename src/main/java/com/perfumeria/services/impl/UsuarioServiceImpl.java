@@ -1,5 +1,7 @@
 package com.perfumeria.services.impl;
 
+import com.perfumeria.exception.UsuarioAlreadyExistsException;
+import com.perfumeria.exception.UsuarioNotFoundException;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.repositories.UsuarioRepository;
 import com.perfumeria.services.IUsuarioService;
@@ -21,7 +23,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public Usuario crearUsuario(Usuario usuario) {
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-            throw new RuntimeException("El username ya existe");
+            throw new UsuarioAlreadyExistsException(usuario.getUsername());
         }
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);
@@ -30,7 +32,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public void eliminarUsuario(String username) {
         if (!usuarioRepository.existsById(username)) {
-            throw new RuntimeException("Usuario no encontrado");
+            throw new UsuarioNotFoundException(username);
         }
         usuarioRepository.deleteById(username);
     }

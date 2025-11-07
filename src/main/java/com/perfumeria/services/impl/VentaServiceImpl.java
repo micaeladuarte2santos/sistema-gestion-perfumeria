@@ -1,5 +1,8 @@
 package com.perfumeria.services.impl;
 
+import com.perfumeria.exception.ProductoNotFoundException;
+import com.perfumeria.exception.StockInsuficienteException;
+import com.perfumeria.exception.VentaNotFoundException;
 import com.perfumeria.models.DetalleVenta;
 import com.perfumeria.models.Producto;
 import com.perfumeria.models.Venta;
@@ -43,10 +46,11 @@ public class VentaServiceImpl implements IVentaService {
 
         for (DetalleVenta detalle : venta.getDetalles()) {
 
-            Producto producto = productoRepository.findById(detalle.getProducto().getId()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            Producto producto = productoRepository.findById(detalle.getProducto().getId())
+                .orElseThrow(() -> new ProductoNotFoundException(detalle.getProducto().getId()));
 
             if (producto.getStock() < detalle.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+                throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), detalle.getCantidad());
             }
 
             // resta del stock
@@ -70,7 +74,7 @@ public class VentaServiceImpl implements IVentaService {
     @Override
     @Transactional(readOnly = true)
     public Venta findById(Long id) {
-        return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta inexistente"));
+        return ventaRepository.findById(id).orElseThrow(() -> new VentaNotFoundException(id));
     }
 
 
@@ -83,11 +87,11 @@ public class VentaServiceImpl implements IVentaService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta inexistente"));
+        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new VentaNotFoundException(id));
 
         if (venta.getDetalles() != null) {
             for (DetalleVenta dv : venta.getDetalles()) {
-                Producto p = productoRepository.findById(dv.getProducto().getId()).orElseThrow(() -> new RuntimeException("Producto no encontrado al eliminar venta"));
+                Producto p = productoRepository.findById(dv.getProducto().getId()).orElseThrow(() -> new ProductoNotFoundException(dv.getProducto().getId()));
                 p.setStock(p.getStock() + dv.getCantidad());
                 productoRepository.save(p);
             }
