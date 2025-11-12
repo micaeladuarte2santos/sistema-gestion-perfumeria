@@ -6,5 +6,5 @@ import com.perfumeria.models.CategoriaProducto;
 
 public interface ICategoriaService {
     CategoriaProducto crearCategoria(CategoriaProducto categoria);
-    List<CategoriaProducto> listarCategorias();
+    List<CategoriaProducto> listarCategorias(); 
 }
