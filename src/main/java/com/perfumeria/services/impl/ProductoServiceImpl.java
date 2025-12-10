@@ -6,9 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.perfumeria.exception.CategoriaNotFoundException;
 import com.perfumeria.exception.ProductoNotFoundException;
+import com.perfumeria.exception.ProveedorNotFoundException;
+import com.perfumeria.models.CategoriaProducto;
 import com.perfumeria.models.Producto;
+import com.perfumeria.models.Proveedor;
 import com.perfumeria.repositories.CategoriaProductoRepository;
 import com.perfumeria.repositories.ProductoRepository;
+import com.perfumeria.repositories.ProveedorRepository;
 import com.perfumeria.services.IProductoService;
 import lombok.AllArgsConstructor;
 
@@ -21,12 +25,25 @@ public class ProductoServiceImpl implements IProductoService{
 
     @Autowired
     private CategoriaProductoRepository categoriaRepository;
+    
+    @Autowired
+    private ProveedorRepository proveedorRepository;
 
     @Override
     @Transactional
     public Producto crearProducto(Producto producto) {
         productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new RuntimeException("Ya existe un producto con el mismo código de barras");});
-        categoriaRepository.findById(producto.getCategoria().getId()).orElseThrow(() -> new CategoriaNotFoundException(producto.getCategoria().getId()));
+        
+        CategoriaProducto categoria = categoriaRepository.findById(producto.getCategoria().getId())
+            .orElseThrow(() -> new CategoriaNotFoundException(producto.getCategoria().getId()));
+        producto.setCategoria(categoria);
+        
+        if (producto.getProveedor() != null && producto.getProveedor().getId() != null) {
+            Proveedor proveedor = proveedorRepository.findById(producto.getProveedor().getId())
+                .orElseThrow(() -> new ProveedorNotFoundException(producto.getProveedor().getId()));
+            producto.setProveedor(proveedor);
+        }
+        
         producto.setActivo(true);
         return productoRepository.save(producto);
     }

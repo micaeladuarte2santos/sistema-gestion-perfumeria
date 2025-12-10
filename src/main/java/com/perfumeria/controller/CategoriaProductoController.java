@@ -1,14 +1,20 @@
 package com.perfumeria.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perfumeria.dto.CategoriaRequestDTO;
+import com.perfumeria.dto.CategoriaResponseDTO;
+import com.perfumeria.dto.mapper.CategoriaMapper;
 import com.perfumeria.models.CategoriaProducto;
 import com.perfumeria.services.impl.CategoriaServiceImpl;
 
@@ -18,15 +24,23 @@ public class CategoriaProductoController {
 
     @Autowired
     private CategoriaServiceImpl categoriaService;
+    
+    @Autowired
+    private CategoriaMapper categoriaMapper;
 
     @PostMapping
-    public CategoriaProducto crearCategoria(@RequestBody CategoriaProducto categoria) {
-        return categoriaService.crearCategoria(categoria);
+    public ResponseEntity<CategoriaResponseDTO> crearCategoria(@RequestBody CategoriaRequestDTO request) {
+        CategoriaProducto categoria = categoriaMapper.toEntity(request);
+        CategoriaProducto nuevaCategoria = categoriaService.crearCategoria(categoria);
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaMapper.toResponse(nuevaCategoria));
     }
 
     @GetMapping
-    public List<CategoriaProducto> listarCategorias() {
-        return categoriaService.listarCategorias();
+    public ResponseEntity<List<CategoriaResponseDTO>> listarCategorias() {
+        List<CategoriaResponseDTO> categorias = categoriaService.listarCategorias().stream()
+            .map(categoriaMapper::toResponse)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(categorias);
     }
 
 }

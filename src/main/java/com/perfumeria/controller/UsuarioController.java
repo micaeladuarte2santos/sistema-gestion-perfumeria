@@ -1,5 +1,8 @@
 package com.perfumeria.controller;
 
+import com.perfumeria.dto.UsuarioRequestDTO;
+import com.perfumeria.dto.UsuarioResponseDTO;
+import com.perfumeria.dto.mapper.UsuarioMapper;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.services.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,14 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
     
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+    
     @PostMapping
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDTO> crearUsuario(@RequestBody UsuarioRequestDTO request) {
+        Usuario usuario = usuarioMapper.toEntity(request);
         Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toResponse(nuevoUsuario));
     }
     
     @DeleteMapping("/{username}")

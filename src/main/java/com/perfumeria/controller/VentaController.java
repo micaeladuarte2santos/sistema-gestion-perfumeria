@@ -2,14 +2,19 @@ package com.perfumeria.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perfumeria.dto.VentaRequestDTO;
+import com.perfumeria.dto.VentaResponseDTO;
+import com.perfumeria.dto.mapper.VentaMapper;
 import com.perfumeria.models.Venta;
 import com.perfumeria.services.impl.VentaServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,21 +31,29 @@ public class VentaController {
 
     @Autowired
     private VentaServiceImpl ventaService;
+    
+    @Autowired
+    private VentaMapper ventaMapper;
 
     @PostMapping
-    public Venta crearVenta(@RequestBody Venta venta) {
-        return ventaService.createVenta(venta);
+    public ResponseEntity<VentaResponseDTO> crearVenta(@RequestBody VentaRequestDTO request) {
+        Venta venta = ventaMapper.toEntity(request);
+        Venta nuevaVenta = ventaService.createVenta(venta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ventaMapper.toResponse(nuevaVenta));
     }
 
     @GetMapping
-    public ResponseEntity<List<Venta>> getAllVentas() {
-        return ResponseEntity.ok(ventaService.findAll());
+    public ResponseEntity<List<VentaResponseDTO>> getAllVentas() {
+        List<VentaResponseDTO> ventas = ventaService.findAll().stream()
+            .map(ventaMapper::toResponse)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(ventas);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Venta> getVentaById(@PathVariable Long id) {
+    public ResponseEntity<VentaResponseDTO> getVentaById(@PathVariable Long id) {
         Venta venta = ventaService.findById(id);
-        return ResponseEntity.ok(venta);
+        return ResponseEntity.ok(ventaMapper.toResponse(venta));
     }
 
     @DeleteMapping("/{id}")
@@ -50,13 +63,19 @@ public class VentaController {
     }
 
     @GetMapping("/mes")
-    public ResponseEntity<List<Venta>> getVentasPorMes(@RequestParam int mes, @RequestParam int anio) {
-        return ResponseEntity.ok(ventaService.findByMes(mes, anio));
+    public ResponseEntity<List<VentaResponseDTO>> getVentasPorMes(@RequestParam int mes, @RequestParam int anio) {
+        List<VentaResponseDTO> ventas = ventaService.findByMes(mes, anio).stream()
+            .map(ventaMapper::toResponse)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(ventas);
     }
 
     @GetMapping("/anio")
-    public ResponseEntity<List<Venta>> getVentasPorAnio(@RequestParam int anio) {
-        return ResponseEntity.ok(ventaService.findByAnio(anio));
+    public ResponseEntity<List<VentaResponseDTO>> getVentasPorAnio(@RequestParam int anio) {
+        List<VentaResponseDTO> ventas = ventaService.findByAnio(anio).stream()
+            .map(ventaMapper::toResponse)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(ventas);
     }
 
     @GetMapping("/recaudacion/dia")
