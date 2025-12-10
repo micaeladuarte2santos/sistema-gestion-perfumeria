@@ -10,6 +10,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler({
 		CategoriaNotFoundException.class,
+		CategoriaAlreadyExistsException.class,
 		ProductoNotFoundException.class,
 		UsuarioNotFoundException.class,
         VentaInvalidaException.class,

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perfumeria.exception.CategoriaAlreadyExistsException;
 import com.perfumeria.models.CategoriaProducto;
 import com.perfumeria.repositories.CategoriaProductoRepository;
 import com.perfumeria.services.ICategoriaService;
@@ -20,6 +21,9 @@ public class CategoriaServiceImpl implements ICategoriaService{
 
     @Override
     public CategoriaProducto crearCategoria(CategoriaProducto categoria) {
+        categoriaRepository.findByNombre(categoria.getNombre()).ifPresent(c -> {
+            throw new CategoriaAlreadyExistsException(categoria.getNombre());
+        });
         return categoriaRepository.save(categoria);
     }
 
