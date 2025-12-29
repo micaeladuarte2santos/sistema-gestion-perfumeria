@@ -10,7 +10,7 @@ import com.perfumeria.repositories.DetalleVentaRepository;
 import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.VentaRepository;
 import com.perfumeria.services.IVentaService;
-import com.perfumeria.models.EstadoVenta;
+import com.perfumeria.models.EstadoVentaEnum;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class VentaServiceImpl implements IVentaService {
     public Venta createVenta(Venta venta) {
 
         venta.setFecha(LocalDateTime.now());
-        venta.setEstado(EstadoVenta.PENDIENTE);
+        venta.setEstado(EstadoVentaEnum.PENDIENTE);
         
         double totalVenta = 0.0;
         Venta ventaGuardada = ventaRepository.save(venta);
@@ -128,6 +128,14 @@ public class VentaServiceImpl implements IVentaService {
     @Transactional(readOnly = true)
     public Double getRecaudacionPorAnio(int anio) {
         return Optional.ofNullable(ventaRepository.getRecaudacionPorAnio(anio)).orElse(0.0);
+    }
+
+    @Override
+    @Transactional
+    public Venta actualizarEstado(Long id, EstadoVentaEnum nuevoEstado) {
+        Venta venta = ventaRepository.findById(id).orElseThrow(() -> new VentaNotFoundException(id));
+        venta.setEstado(nuevoEstado);
+        return ventaRepository.save(venta);
     }
 
 }

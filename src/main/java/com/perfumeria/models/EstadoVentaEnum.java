@@ -1,7 +1,8 @@
 package com.perfumeria.models;
 
-public enum EstadoVenta {
+public enum EstadoVentaEnum {
     PENDIENTE,
     CANCELADA,
-    ABONADA
+    ABONADA,
+    DEVUELTA
 }

@@ -40,6 +40,6 @@ public class Venta {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EstadoVenta estado = EstadoVenta.PENDIENTE;
+    private EstadoVentaEnum estado = EstadoVentaEnum.PENDIENTE;
 
 }

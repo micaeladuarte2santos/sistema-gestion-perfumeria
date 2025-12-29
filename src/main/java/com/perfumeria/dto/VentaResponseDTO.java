@@ -1,6 +1,6 @@
 package com.perfumeria.dto;
 
-import com.perfumeria.models.EstadoVenta;
+import com.perfumeria.models.EstadoVentaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,5 @@ public class VentaResponseDTO {
     private LocalDateTime fecha;
     private List<DetalleVentaResponseDTO> detalles;
     private double total;
-    private EstadoVenta estado;
+    private EstadoVentaEnum estado;
 }

@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import com.perfumeria.models.EstadoVentaEnum;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +62,12 @@ public class VentaController {
     public ResponseEntity<Void> deleteVenta(@PathVariable Long id) {
         ventaService.deleteById(id);
         return ResponseEntity.noContent().build(); 
+    }
+
+    @PutMapping("/{id}/estado/{estado}")
+    public ResponseEntity<VentaResponseDTO> actualizarEstado(@PathVariable Long id, @PathVariable EstadoVentaEnum estado) {
+        Venta ventaActualizada = ventaService.actualizarEstado(id, estado);
+        return ResponseEntity.ok(ventaMapper.toResponse(ventaActualizada));
     }
 
     @GetMapping("/mes")

@@ -1,5 +1,6 @@
 package com.perfumeria.services;
 
+import com.perfumeria.models.EstadoVentaEnum;
 import com.perfumeria.models.Venta;
 
 import java.time.LocalDate;
@@ -16,4 +17,5 @@ public interface IVentaService {
     Double getRecaudacionPorDia(LocalDate fecha);
     Double getRecaudacionPorMes(int mes, int anio);
     Double getRecaudacionPorAnio(int anio);
+    Venta actualizarEstado(Long id, EstadoVentaEnum nuevoEstado);
 }
