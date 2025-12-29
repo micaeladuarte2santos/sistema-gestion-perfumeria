@@ -1,0 +1,35 @@
+# Sistema de Gestión - Perfumería
+
+Guía para levantar el proyecto localmente.
+
+Requisitos:
+- Java 17+
+- MySQL
+
+Pasos:
+
+1) Crear la base de datos en MySQL
+
+Abre tu cliente MySQL y ejecuta:
+
+```sql
+CREATE DATABASE perfumeria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+
+2) Verificar `application.properties`
+
+Revisa `src/main/resources/application.properties` y ajusta las credenciales si es necesario. Por defecto el proyecto usa:
+
+```
+spring.datasource.url=jdbc:mysql://localhost:3306/perfumeria?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+3) Levantar la aplicación
+
+
+4) Ejecutar el script de datos (INSERTs)
+
+Una vez la aplicación esté corriendo (o la base creada), ejecuta el script SQL con los INSERTs
