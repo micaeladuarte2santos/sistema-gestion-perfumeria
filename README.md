@@ -15,7 +15,6 @@ Abre tu cliente MySQL y ejecuta:
 
 ```sql
 CREATE DATABASE perfumeria 
-utf8mb4_unicode_ci;
 ```
 
 2) Verificar `application.properties`
