@@ -5,6 +5,7 @@ Guía para levantar el proyecto localmente.
 Requisitos:
 - Java 17+
 - MySQL
+- Spring Boot (aplicación construida con Spring Boot)
 
 Pasos:
 
@@ -13,9 +14,9 @@ Pasos:
 Abre tu cliente MySQL y ejecuta:
 
 ```sql
-CREATE DATABASE perfumeria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE perfumeria 
+utf8mb4_unicode_ci;
 ```
-
 
 2) Verificar `application.properties`
 
@@ -32,4 +33,6 @@ spring.datasource.password=root
 
 4) Ejecutar el script de datos (INSERTs)
 
-Una vez la aplicación esté corriendo (o la base creada), ejecuta el script SQL con los INSERTs
+El script con los INSERTs se llama `insert-Perfumeria.sql`.
+
+Una vez la aplicación esté corriendo, ejecuta el script SQL con los INSERTs a la base de datos.
