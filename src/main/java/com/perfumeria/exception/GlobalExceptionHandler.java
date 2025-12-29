@@ -17,7 +17,8 @@ public class GlobalExceptionHandler {
         StockInsuficienteException.class,
         ProductoInactivoException.class,
         ProveedorNotFoundException.class,
-        UsuarioAlreadyExistsException.class,
+	UsuarioAlreadyExistsException.class,
+	UsuarioEmailAlreadyExistsException.class,
         VentaNotFoundException.class
 	})
 	public ResponseEntity<MensajeError> manejarErroresDeValidacion(RuntimeException ex) {

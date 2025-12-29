@@ -2,6 +2,8 @@ package com.perfumeria.services.impl;
 
 import com.perfumeria.exception.UsuarioAlreadyExistsException;
 import com.perfumeria.exception.UsuarioNotFoundException;
+
+import com.perfumeria.exception.UsuarioEmailAlreadyExistsException;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.repositories.UsuarioRepository;
 import com.perfumeria.services.IUsuarioService;
@@ -24,6 +26,9 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public Usuario crearUsuario(Usuario usuario) {
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
             throw new UsuarioAlreadyExistsException(usuario.getUsername());
+        }
+        if (usuario.getEmail() != null && usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new UsuarioEmailAlreadyExistsException(usuario.getEmail());
         }
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);
