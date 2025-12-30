@@ -60,8 +60,8 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoResponseDTO> actualizarPrecioYStock(@PathVariable Long id, @RequestParam(required = false) Double precio, @RequestParam(required = false) Integer stock) {
-        Producto actualizado = productoService.actualizarPrecioYStock(id, precio, stock);
+    public ResponseEntity<ProductoResponseDTO> actualizarPrecioYStock(@PathVariable Long id, @RequestParam(required = false) Double precio, @RequestParam(required = false) Double precioCosto, @RequestParam(required = false) Integer stock) {
+        Producto actualizado = productoService.actualizarPrecioYStock(id, precio, precioCosto, stock);
         return ResponseEntity.ok(productoMapper.toResponse(actualizado));
     }
 

@@ -15,6 +15,7 @@ public class ProductoMapper {
         producto.setCodigoBarras(request.getCodigoBarras());
         producto.setNombre(request.getNombre());
         producto.setPrecio(request.getPrecio());
+        producto.setPrecioCosto(request.getPrecioCosto());
         producto.setStock(request.getStock());
         
         if (request.getCategoriaId() != null) {
@@ -38,6 +39,7 @@ public class ProductoMapper {
         response.setCodigoBarras(producto.getCodigoBarras());
         response.setNombre(producto.getNombre());
         response.setPrecio(producto.getPrecio());
+        response.setPrecioCosto(producto.getPrecioCosto());
         response.setStock(producto.getStock());
         response.setActivo(producto.isActivo());
         

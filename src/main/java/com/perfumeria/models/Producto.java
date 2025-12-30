@@ -24,6 +24,7 @@ public class Producto {
     private String codigoBarras;
     private String nombre;
     private double precio;
+    private double precioCosto;
     private int stock;
     
     @Column(nullable = false)

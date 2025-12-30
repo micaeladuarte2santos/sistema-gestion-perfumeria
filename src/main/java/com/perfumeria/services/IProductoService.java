@@ -10,5 +10,5 @@ public interface IProductoService {
     Producto obtenerPorCodigoBarras(String codigoBarras);
     List<Producto> listarPorCategoria(Long categoriaId);
     void eliminarProducto(Long id);
-    Producto actualizarPrecioYStock(Long id, Double precio, Integer stock);
+    Producto actualizarPrecioYStock(Long id, Double precio, Double precioCosto, Integer stock);
 }

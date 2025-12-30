@@ -11,6 +11,7 @@ public class ProductoRequestDTO {
     private String codigoBarras;
     private String nombre;
     private double precio;
+    private double precioCosto;
     private int stock;
     private Long categoriaId;
     private Long proveedorId;

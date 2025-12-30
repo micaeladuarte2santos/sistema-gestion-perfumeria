@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.perfumeria.exception.CategoriaNotFoundException;
+import com.perfumeria.exception.ProductoCodigoBarrasAlreadyExistsException;
 import com.perfumeria.exception.ProductoNotFoundException;
 import com.perfumeria.exception.ProveedorNotFoundException;
 import com.perfumeria.models.CategoriaProducto;
@@ -32,7 +33,7 @@ public class ProductoServiceImpl implements IProductoService{
     @Override
     @Transactional
     public Producto crearProducto(Producto producto) {
-        productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new RuntimeException("Ya existe un producto con el mismo código de barras");});
+        productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new ProductoCodigoBarrasAlreadyExistsException(producto.getCodigoBarras());});
         
         CategoriaProducto categoria = categoriaRepository.findById(producto.getCategoria().getId())
             .orElseThrow(() -> new CategoriaNotFoundException(producto.getCategoria().getId()));
@@ -74,12 +75,16 @@ public class ProductoServiceImpl implements IProductoService{
         productoRepository.save(producto);
     }
 
+    
     @Override
     @Transactional
-    public Producto actualizarPrecioYStock(Long id, Double precio, Integer stock) {
+    public Producto actualizarPrecioYStock(Long id, Double precio, Double precioCosto, Integer stock) {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new ProductoNotFoundException(id));
         if (precio != null) {
             producto.setPrecio(precio);
+        }
+        if (precioCosto != null) {
+            producto.setPrecioCosto(precioCosto);
         }
         if (stock != null) {
             producto.setStock(stock);
