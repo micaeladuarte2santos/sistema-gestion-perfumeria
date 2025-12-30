@@ -17,6 +17,7 @@ public class VentaMapper {
     public Venta toEntity(VentaRequestDTO request) {
         Venta venta = new Venta();
         venta.setNombreCliente(request.getNombreCliente());
+        venta.setMetodoPago(request.getMetodoPago());
         
         if (request.getDetalles() != null) {
             venta.setDetalles(
@@ -36,6 +37,7 @@ public class VentaMapper {
         response.setFecha(venta.getFecha());
         response.setTotal(venta.getTotal());
         response.setEstado(venta.getEstado());
+        response.setMetodoPago(venta.getMetodoPago());
         
         if (venta.getDetalles() != null) {
             response.setDetalles(

@@ -42,4 +42,8 @@ public class Venta {
     @Column(nullable = false)
     private EstadoVentaEnum estado = EstadoVentaEnum.PENDIENTE;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MetodoPagoEnum metodoPago;
+
 }

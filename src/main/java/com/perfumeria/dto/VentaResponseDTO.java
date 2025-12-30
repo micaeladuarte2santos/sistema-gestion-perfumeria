@@ -1,6 +1,7 @@
 package com.perfumeria.dto;
 
 import com.perfumeria.models.EstadoVentaEnum;
+import com.perfumeria.models.MetodoPagoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,5 @@ public class VentaResponseDTO {
     private List<DetalleVentaResponseDTO> detalles;
     private double total;
     private EstadoVentaEnum estado;
+    private MetodoPagoEnum metodoPago;
 }
