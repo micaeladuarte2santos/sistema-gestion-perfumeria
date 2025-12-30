@@ -74,4 +74,17 @@ public class ProductoServiceImpl implements IProductoService{
         productoRepository.save(producto);
     }
 
+    @Override
+    @Transactional
+    public Producto actualizarPrecioYStock(Long id, Double precio, Integer stock) {
+        Producto producto = productoRepository.findById(id).orElseThrow(() -> new ProductoNotFoundException(id));
+        if (precio != null) {
+            producto.setPrecio(precio);
+        }
+        if (stock != null) {
+            producto.setStock(stock);
+        }
+        return productoRepository.save(producto);
+    }
+
 }
