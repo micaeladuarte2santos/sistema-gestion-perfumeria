@@ -22,4 +22,7 @@ public class Usuario {
     private String apellido;
     private String email;
     private LocalDate fechaNacimiento;
+    
+    @Column(nullable = false)
+    private boolean verificado = false;
 }
