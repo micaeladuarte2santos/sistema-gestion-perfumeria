@@ -20,7 +20,9 @@ public class GlobalExceptionHandler {
 		UsuarioAlreadyExistsException.class,
 		UsuarioEmailAlreadyExistsException.class,
 		ProductoCodigoBarrasAlreadyExistsException.class,
-        VentaNotFoundException.class
+        VentaNotFoundException.class,
+        CodigoVerificacionInvalidoException.class,
+        CodigoVerificacionExpiradoException.class
 	})
 	public ResponseEntity<MensajeError> manejarErroresDeValidacion(RuntimeException ex) {
 		return new ResponseEntity<>(new MensajeError(ex.getMessage()), HttpStatus.BAD_REQUEST);
