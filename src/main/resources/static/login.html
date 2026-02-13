@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+
+            <div class="icono">
+                🛒
+            </div>
+
+            <h3>Bienvenido</h3>
+
+            <p class="subtitle">
+            Por favor ingresa tu usuario y contraseña para continuar
+            </p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="text" name="username" id="username" placeholder="Usuario" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" id="password" placeholder="Contraseña" required>
+                </div>
+
+                <button type="submit" class="btn-logout" style="width: 100%; border: none; cursor: pointer;">
+                    INGRESAR
+                </button>
+            </form>
+
+
+
+            <div class="links">
+                <p>¿No tenés cuenta? <a href="singup.html">Registrate</a></p>
+                <p><a href="resetPass1.html">¿Olvidaste tu contraseña?</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../static/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva clave</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../static/css/resetPass1.css">
+</head>
+<body>
+
+    <div class="reset-container">
+        <div class="reset-card">
+            <a href="resetPass1.html" class="btn-back">← Volver</a>
+
+            <div class="icono">🛒</div>
+
+            <h3>Reestablecimiento de clave</h3>
+            <p class="subtitle">
+                Por favor complete los siguientes datos.
+            </p>
+
+          <form id="formReset2">
+            <div class="input-group">
+                <label>Nueva clave</label>
+                <input type="password" id="pass1" required>
+            </div>
+            <div class="input-group">
+                <label>Repetir clave</label>
+                <input type="password" id="pass2" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Confirmar</button>
+        </form>  
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../static/js/resetPass2.js"></script>
+
+</body>
+</html>

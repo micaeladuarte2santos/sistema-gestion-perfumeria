@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificar Cuenta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/verificarUsuario.css">
+</head>
+<body>
+    <!-- El overlay oscurece el fondo -->
+    <div class="modal-overlay">
+        <!-- La card ahora actúa como el Pop-Up blanco -->
+        <div class="popup-card">
+            <div class="icono-popup">📩</div>
+            <h3>Verifica tu cuenta</h3>
+            <p class="subtitle">Ingresa el código de 6 dígitos que enviamos a tu correo.</p>
+
+            <form id="verificarForm">
+                <div class="input-group">
+                    <input type="text" id="codigo" maxlength="6" placeholder="000000" required>
+                </div>
+                <button type="submit" class="btn-verify">VERIFICAR</button>
+            </form>
+            
+            <a href="signup.html" class="link-cancelar">Cancelar</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../static/js/verificarUsuario.js"></script>
+</body>
+</html>
