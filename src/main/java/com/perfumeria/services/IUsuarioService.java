@@ -7,4 +7,5 @@ public interface IUsuarioService {
     void eliminarUsuario(String username);
     void verificarUsuario(String username, String codigo);
     void reenviarCodigoVerificacion(String username);
+    boolean verificarCredenciales(String username, String password);
 }

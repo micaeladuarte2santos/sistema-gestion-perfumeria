@@ -39,6 +39,18 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     @Value("${verificacion.codigo.expiracion.minutos:15}")
     private int minutosExpiracion;
+
+
+    
+    @Override
+    public boolean verificarCredenciales(String username, String password) {
+    // Buscamos al usuario por su username
+    return usuarioRepository.findByUsername(username)
+            .map(user -> passwordEncoder.matches(password, user.getPassword())) 
+            // password = lo que viene del formulario (plano)
+            // user.getPassword() = lo que está en la BD (encriptado)
+            .orElse(false); 
+}
     
     @Override
     public Usuario crearUsuario(Usuario usuario) {
@@ -111,10 +123,30 @@ public class UsuarioServiceImpl implements IUsuarioService {
         codigoVerificacion.setUsado(false);
         codigoVerificacionRepository.save(codigoVerificacion);
 
-        emailService.enviarCodigoVerificacion(
-            usuario.getEmail(), 
-            codigo, 
-            usuario.getNombre() + " " + usuario.getApellido()
-        );
+        try {
+            emailService.enviarCodigoVerificacion(
+                usuario.getEmail(), 
+                codigo, 
+                usuario.getNombre() + " " + usuario.getApellido()
+            );
+        } catch (Exception e) {
+            // Imprimimos el error en consola para monitoreo
+            System.err.println("ERROR: No se pudo enviar el correo de verificación: " + e.getMessage());
+            // Al no lanzar un 'throw', la ejecución sigue y el usuario queda guardado
+        }
     }
+       
+    @Override
+    @Transactional 
+    public void actualizarPassword(String username, String nuevoPassword) {
+    // Buscamos al usuario por su username
+    Usuario usuario = usuarioRepository.findByUsername(username)
+        .orElseThrow(() -> new UsuarioNotFoundException(username));
+    
+    // Seteamos la nueva clave encriptada
+    usuario.setPassword(passwordEncoder.encode(nuevoPassword));
+    
+    // Guardamos los cambios
+    usuarioRepository.save(usuario);
+}
 }
