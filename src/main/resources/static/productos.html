@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../static/css/productos.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>SISTEMA DE<br>INVENTARIO</h2>
+        <nav>
+            <a class="active">PRODUCTOS</a>
+            <a>PROVEEDORES</a>
+            <a>VENTAS</a>
+        </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1>PRODUCTOS</h1>
+            <a href="dashboard.html" class="home-btn">HOME</a>
+        </header>
+
+        <!-- Contenido -->
+        <section class="content">
+
+            <!-- Filtros -->
+            <div class="filtros">
+                <button class="btn" id="cargarProductoBtn">CARGAR<br>PRODUCTO</button>
+                
+                <div class="campo">
+                    <label>NOMBRE</label>
+                    <input type="text" id="productoNombre" placeholder="Buscar producto">
+                </div>
+
+                <div class="campo">
+                    <label>PROVEEDOR</label>
+                    <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
+                </div>
+
+                <button class="btn buscar" id="buscarProductoBtn">BUSCAR</button>
+            </div>
+
+            <!-- Total -->
+            <p class="total">TOTAL PRODUCTOS: <span id="totalCount">0</span></p>
+
+            <!-- Lista -->
+            <div class="lista" id="lista-productos">
+                <div class="fila">
+                    <span>NOMBRE</span>
+                    <span>PROVEEDOR</span>
+                    <span>PRECIO</span>
+                    <span>STOCK</span>
+                </div>
+                <!-- Aquí se cargarán los productos dinámicamente -->
+            </div>
+
+        </section>
+    </div>
+</div>
+
+<script src="../static/js/productos.js"></script>
+
+</body>
+</html>

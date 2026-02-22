@@ -55,6 +55,7 @@ public class ProductoServiceImpl implements IProductoService{
         return productoRepository.findByActivoTrue();
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public Producto obtenerPorCodigoBarras(String codigoBarras) {
