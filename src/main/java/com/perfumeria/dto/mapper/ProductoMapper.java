@@ -32,6 +32,8 @@ public class ProductoMapper {
         
         return producto;
     }
+
+    
     
     public ProductoResponseDTO toResponse(Producto producto) {
         ProductoResponseDTO response = new ProductoResponseDTO();
@@ -42,6 +44,7 @@ public class ProductoMapper {
         response.setPrecioCosto(producto.getPrecioCosto());
         response.setStock(producto.getStock());
         response.setActivo(producto.isActivo());
+        response.setImagen(producto.getImagen());
         
         if (producto.getCategoria() != null) {
             response.setCategoriaNombre(producto.getCategoria().getNombre());

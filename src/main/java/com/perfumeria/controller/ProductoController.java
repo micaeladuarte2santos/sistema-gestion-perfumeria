@@ -7,12 +7,22 @@ import com.perfumeria.models.Producto;
 import com.perfumeria.services.impl.ProductoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import java.nio.file.*;
+import java.util.UUID;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 
 @RestController
 @RequestMapping("productos")
@@ -24,6 +34,39 @@ public class ProductoController {
     
     @Autowired
     private ProductoMapper productoMapper;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
+
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductoResponseDTO> crearProducto(
+            @RequestPart("producto") ProductoRequestDTO request,
+            @RequestPart(value = "imagen", required = false) MultipartFile imagen) {
+
+        Producto producto = productoMapper.toEntity(request);
+
+        if (imagen != null && !imagen.isEmpty()) {
+            try {
+                String carpeta = "C:\\Users\\Abril\\OneDrive\\Pictures\\PPS";
+                String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
+
+                Path ruta = Paths.get(carpeta + nombreArchivo);
+                Files.createDirectories(ruta.getParent());
+                Files.copy(imagen.getInputStream(), ruta, StandardCopyOption.REPLACE_EXISTING);
+
+                producto.setImagen(nombreArchivo);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+
+        Producto nuevo = productoService.crearProducto(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toResponse(nuevo));
+    }
 
     @PostMapping
     public ResponseEntity<ProductoResponseDTO> crearProducto(@RequestBody ProductoRequestDTO request) {

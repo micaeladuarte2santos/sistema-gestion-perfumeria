@@ -17,4 +17,5 @@ public class ProductoResponseDTO {
     private boolean activo;
     private String categoriaNombre;
     private String proveedorNombre;
+    private String imagen;
 }

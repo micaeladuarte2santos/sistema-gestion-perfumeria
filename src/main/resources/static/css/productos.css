@@ -121,7 +121,7 @@ body {
 .fila {
     display: grid;
     /* Cambiamos a 4 columnas iguales (o ajusta los fr según prefieras) */
-    grid-template-columns: 2fr 2fr 1fr 1fr; 
+    grid-template-columns: 2fr 2fr 1fr 1fr 60px;
     background: #ffffff; /* Color de fondo para los registros */
     border: 1px solid #ccc;
     padding: 12px;
@@ -144,6 +144,7 @@ body {
     font-size: 11px;
     letter-spacing: 1px;
     margin-bottom: 10px; /* Espacio extra debajo del título */
+    
 }
 
 #abmOverlay, .abm-overlay {
@@ -180,13 +181,43 @@ body {
   cursor: pointer;
 }
 
-/* pequeñas adaptaciones para inputs y layout dentro del modal (si no están ya) */
-.abm-form { display: grid; gap: 12px; }
-.row label { font-size: 13px; margin-bottom: 6px; color: #333; }
-.row input[type="text"], .row input[type="number"], .row select {
-  padding: 8px 10px; border: 1px solid #d0d5e9; border-radius: 6px; background: #fafafa;
+.abm-form { 
+  display: grid; 
+  gap: 12px; 
 }
-.split { display: flex; gap: 12px; }
-.split .col { flex: 1; }
-.actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
-@media (max-width:720px) { .split { flex-direction:column; } .abm-panel { padding:12px; } }
+
+.row label { 
+  font-size: 13px; 
+  margin-bottom: 6px; 
+  color: #333; 
+}
+
+.row input[type="text"],
+.row input[type="number"],
+.row select {
+  padding: 8px 10px; 
+  border: 1px solid #d0d5e9; 
+  border-radius: 6px; 
+  background: #fafafa;
+}
+
+.split { 
+  display: flex; 
+  gap: 12px; 
+}
+
+.split .col { 
+  flex: 1; 
+}
+
+.actions { 
+  display:flex; 
+  gap:10px; 
+  justify-content:flex-end; 
+  margin-top:8px; 
+}
+
+@media (max-width:720px) { 
+  .split { flex-direction:column; } 
+  .abm-panel { padding:12px; } 
+}

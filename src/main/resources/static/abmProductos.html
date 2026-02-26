@@ -1,47 +1,53 @@
 <!-- producto_abm.html -->
 <div class="abm-overlay">
   <div class="abm-panel" role="dialog" aria-modal="true" aria-labelledby="abmTitle">
+    
     <div class="abm-header">
       <h3 id="abmTitle">Nuevo Producto</h3>
       <button id="btnCerrar" class="close" aria-label="Cerrar">×</button>
     </div>
 
-    <form id="productoForm" class="abm-form">
+    <form id="productoForm" class="abm-form" enctype="multipart/form-data">
+
+      <!-- Código -->
       <div class="row">
         <label for="codigoBarras">Código de barras</label>
         <input id="codigoBarras" name="codigoBarras" type="text" />
       </div>
 
+      <!-- Nombre -->
       <div class="row">
         <label for="nombre">Nombre</label>
         <input id="nombre" name="nombre" type="text" required />
       </div>
 
+      <!-- Precio y Precio Costo -->
       <div class="row split">
         <div class="col">
           <label for="precio">Precio</label>
           <input id="precio" name="precio" type="number" step="0.01" required />
         </div>
+
         <div class="col">
           <label for="precioCosto">Precio costo</label>
           <input id="precioCosto" name="precioCosto" type="number" step="0.01" />
         </div>
       </div>
 
+      <!-- Stock e Imagen -->
       <div class="row split">
         <div class="col">
           <label for="stock">Stock</label>
           <input id="stock" name="stock" type="number" />
         </div>
+
         <div class="col">
-          <label for="activo">Activo</label>
-          <div class="checkbox-wrap">
-            <input id="activo" name="activo" type="checkbox" checked />
-            <label for="activo" class="inline">Activo</label>
-          </div>
+          <label for="imagen">Imagen</label>
+          <input type="file" id="imagen" name="imagen" accept=".jpg,.jpeg,.png">
         </div>
       </div>
 
+      <!-- Categoría y Proveedor -->
       <div class="row split">
         <div class="col">
           <label for="categoria">Categoría</label>
@@ -58,10 +64,21 @@
         </div>
       </div>
 
+      <!-- Activo -->
+      <div class="row">
+        <label for="activo">Estado</label>
+        <div class="checkbox-wrap">
+          <input id="activo" name="activo" type="checkbox" checked />
+          <label for="activo" class="inline">Activo</label>
+        </div>
+      </div>
+
+      <!-- Botones -->
       <div class="actions">
         <button type="submit" class="primary">Guardar</button>
         <button type="button" id="btnCancelar">Cancelar</button>
       </div>
+
     </form>
   </div>
 </div>

@@ -30,7 +30,8 @@ public class Producto {
     @Column(nullable = false)
     private boolean activo = true;
 
-    
+    @Column(name = "imagen")
+    private String imagen;
     
     @ManyToOne
     @JoinColumn(name = "categoria_id")

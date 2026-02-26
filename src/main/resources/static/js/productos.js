@@ -3,6 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('buscarProductoBtn').addEventListener('click', buscarProductos);
     document.getElementById('cargarProductoBtn').addEventListener('click', abrirAbmProducto);
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("btn-editar")) {
+            const id = e.target.dataset.id;
+            abrirAbmProducto(id);
+        }
+    });
+
 });
 
 function cargarProductos() {
@@ -28,6 +35,7 @@ function mostrarProductos(productos) {
             <span>PROVEEDOR</span>
             <span>PRECIO</span>
             <span>STOCK</span>
+            <span>ACCIONES</span>
         </div>
     `;
 
@@ -53,6 +61,9 @@ function mostrarProductos(productos) {
             <span>${escapeHtml(proveedor)}</span>
             <span>$ ${escapeHtml(precio)}</span>
             <span>${escapeHtml(stock)} unidades</span>
+            <span>
+              <button class="btn-editar" data-id="${producto.id}">✏️</button>
+            </span>
         `;
 
         listaProductos.appendChild(fila);
@@ -78,7 +89,7 @@ function buscarProductos() {
 }
 
 
-async function abrirAbmProducto() {
+async function abrirAbmProducto(id = null) {
   let tpl = document.getElementById('abmProductos');
   let overlay;
 
@@ -170,51 +181,93 @@ async function abrirAbmProducto() {
     return;
   }
 
+  if (id) {
+    try {
+        const res = await fetch(`http://localhost:8080/productos/${id}`);
+        if (!res.ok) throw new Error("No se pudo cargar el producto");
+
+        const producto = await res.json();
+
+        overlay.querySelector('#codigoBarras').value = producto.codigoBarras || '';
+        overlay.querySelector('#nombre').value = producto.nombre || '';
+        overlay.querySelector('#precio').value = producto.precio || 0;
+        overlay.querySelector('#precioCosto').value = producto.precioCosto || 0;
+        overlay.querySelector('#stock').value = producto.stock || 0;
+        overlay.querySelector('#categoria').value = producto.categoriaId || '';
+        overlay.querySelector('#proveedor').value = producto.proveedorId || '';
+
+        const titulo = overlay.querySelector('#abmTitle');
+        if (titulo) titulo.textContent = "Editar Producto";
+
+    } catch (err) {
+        console.error("Error cargando producto:", err);
+        alert("No se pudo cargar el producto para editar");
+    }
+}
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Leer y normalizar datos
+    const formData = new FormData();
+
+    // Datos normales del formulario
     const data = Object.fromEntries(new FormData(form).entries());
-    if (data.precio !== undefined) data.precio = parseFloat(data.precio) || 0;
-    if (data.stock !== undefined) data.stock = parseInt(data.stock, 10) || 0;
 
     const categoriaId = data.categoria ? Number(data.categoria) : null;
     const proveedorId = data.proveedor ? Number(data.proveedor) : null;
 
     if (!categoriaId) {
-      alert('Seleccione una categoría válida.');
-      return;
+        alert('Seleccione una categoría válida.');
+        return;
     }
 
-    data.categoriaId = categoriaId;
-    data.proveedorId = proveedorId;
+    const producto = {
+        codigoBarras: data.codigoBarras,
+        nombre: data.nombre,
+        precio: parseFloat(data.precio) || 0,
+        precioCosto: parseFloat(data.precioCosto) || 0,
+        stock: parseInt(data.stock, 10) || 0,
+        categoriaId: categoriaId,
+        proveedorId: proveedorId
+    };
 
-    const activoEl = overlay.querySelector('#activo');
-    data.activo = !!(activoEl && activoEl.checked);
+    // Agregar JSON como texto
+    formData.append("producto", new Blob(
+        [JSON.stringify(producto)], 
+        { type: "application/json" }
+    ));
 
-    console.log('Producto a guardar (payload):', data);
+    // Agregar imagen si existe
+    const inputImagen = form.querySelector('#imagen');
+    if (inputImagen && inputImagen.files.length > 0) {
+        formData.append("imagen", inputImagen.files[0]);
+    }
+
+    console.log("Enviando producto con imagen...");
 
     try {
-      console.log('Payload antes POST:', JSON.stringify(data, null, 2));
-      const res = await fetch('http://localhost:8080/productos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+        const url = id ? `http://localhost:8080/productos/${id}`: 'http://localhost:8080/productos';
+        const method = id ? 'PUT' : 'POST';
 
-      if (!res.ok) {
-        const errText = await res.text().catch(() => null);
-        throw new Error(`Error del servidor: ${res.status} ${errText || res.statusText}`);
-      }
+        const res = await fetch(url, {
+            method: method,
+            body: formData
+        });
 
-      const nuevoProducto = await res.json().catch(() => null);
-      console.log('Producto creado:', nuevoProducto);
+        if (!res.ok) {
+            const errText = await res.text().catch(() => null);
+            throw new Error(`Error del servidor: ${res.status} ${errText || res.statusText}`);
+        }
 
-      cargarProductos(); // refrescar lista
-      close(); // cerrar modal
+        const nuevoProducto = await res.json().catch(() => null);
+        console.log('Producto creado:', nuevoProducto);
+
+        cargarProductos();
+        close();
+
     } catch (err) {
-      console.error('No se pudo guardar el producto:', err);
-      alert('Error al guardar el producto. Revisa la consola para más detalles.');
+        console.error('No se pudo guardar el producto:', err);
+        alert('Error al guardar el producto.');
     }
   });
 }
