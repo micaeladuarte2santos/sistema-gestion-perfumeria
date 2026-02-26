@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("productos")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class ProductoController {
 
@@ -29,6 +29,7 @@ public class ProductoController {
     public ResponseEntity<ProductoResponseDTO> crearProducto(@RequestBody ProductoRequestDTO request) {
         Producto producto = productoMapper.toEntity(request);
         Producto nuevo = productoService.crearProducto(producto);
+        System.out.println("Categoria recibida: " + producto.getCategoria());
         return ResponseEntity.status(HttpStatus.CREATED).body(productoMapper.toResponse(nuevo));
     }
 

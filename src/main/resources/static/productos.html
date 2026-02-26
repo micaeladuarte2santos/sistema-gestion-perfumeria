@@ -16,8 +16,8 @@
         <h2>SISTEMA DE<br>INVENTARIO</h2>
         <nav>
             <a class="active">PRODUCTOS</a>
-            <a>PROVEEDORES</a>
-            <a>VENTAS</a>
+            <a href="proveedores.html">PROVEEDORES</a>
+            <a href="ventas.html">VENTAS</a>
         </nav>
     </aside>
 
@@ -31,41 +31,44 @@
         </header>
 
         <!-- Contenido -->
-        <section class="content">
+        
+            <section class="content">
 
-            <!-- Filtros -->
-            <div class="filtros">
-                <button class="btn" id="cargarProductoBtn">CARGAR<br>PRODUCTO</button>
-                
-                <div class="campo">
-                    <label>NOMBRE</label>
-                    <input type="text" id="productoNombre" placeholder="Buscar producto">
-                </div>
-
-                <div class="campo">
-                    <label>PROVEEDOR</label>
-                    <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
-                </div>
-
-                <button class="btn buscar" id="buscarProductoBtn">BUSCAR</button>
+        <!-- Filtros -->
+        <div class="filtros">
+            <button class="btn" id="cargarProductoBtn">CARGAR<br>PRODUCTO</button>
+            <div class="campo">
+                <label>NOMBRE</label>
+                <input type="text" id="productoNombre" placeholder="Buscar producto">
             </div>
-
-            <!-- Total -->
-            <p class="total">TOTAL PRODUCTOS: <span id="totalCount">0</span></p>
-
-            <!-- Lista -->
-            <div class="lista" id="lista-productos">
-                <div class="fila">
-                    <span>NOMBRE</span>
-                    <span>PROVEEDOR</span>
-                    <span>PRECIO</span>
-                    <span>STOCK</span>
-                </div>
-                <!-- Aquí se cargarán los productos dinámicamente -->
+            <div class="campo">
+                <label>PROVEEDOR</label>
+                <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
             </div>
+            <button class="btn buscar" id="buscarProductoBtn">BUSCAR</button>
+        </div>
 
-        </section>
+        <!-- Total -->
+        <p class="total">TOTAL PRODUCTOS: <span id="totalCount">0</span></p>
+
+        <!-- Lista -->
+        <div class="lista" id="lista-productos">
+            <!-- El encabezado debe estar AQUÍ -->
+            <div class="fila encabezado">
+                <span>NOMBRE</span>
+                <span>PROVEEDOR</span>
+                <span>PRECIO</span>
+                <span>STOCK</span>
+            </div>
+            <!-- Aquí entrarán los datos desde JS -->
+        </div>
+
+    </section>
+
     </div>
+
+        
+    
 </div>
 
 <script src="js/productos.js"></script>

@@ -35,6 +35,10 @@ public class ProductoServiceImpl implements IProductoService{
     public Producto crearProducto(Producto producto) {
         productoRepository.findByCodigoBarras(producto.getCodigoBarras()).ifPresent(p -> {throw new ProductoCodigoBarrasAlreadyExistsException(producto.getCodigoBarras());});
         
+        if (producto.getCategoria() == null || producto.getCategoria().getId() == null) {
+        throw new IllegalArgumentException("La categoría es obligatoria");
+}
+
         CategoriaProducto categoria = categoriaRepository.findById(producto.getCategoria().getId())
             .orElseThrow(() -> new CategoriaNotFoundException(producto.getCategoria().getId()));
         producto.setCategoria(categoria);

@@ -67,6 +67,8 @@ body {
 /* Content */
 .content {
     padding: 30px 40px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Filtros */
@@ -113,22 +115,78 @@ body {
 .lista {
     display: flex;
     flex-direction: column;
-    gap: 12px;
     margin-top: 20px;
 }
 
 .fila {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: #e8e0e0;
-    border: 1px solid #999;
-    justify-content: space-between;
-    padding: 10px;
+    /* Cambiamos a 4 columnas iguales (o ajusta los fr según prefieras) */
+    grid-template-columns: 2fr 2fr 1fr 1fr; 
+    background: #ffffff; /* Color de fondo para los registros */
+    border: 1px solid #ccc;
+    padding: 12px;
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 13px;
+    align-items: center;
 }
 
 .fila span {
-    flex: 1; /* Asegura que cada columna ocupe el mismo espacio */
-    text-align: center; /* Centra el texto */
+    text-align: left; 
+    padding: 0 10px;
 }
+
+.fila.encabezado {
+    background-color: #c3c3c6 !important; 
+    color: white !important;             
+    font-weight: bold;         
+    border: none;
+    text-transform: uppercase; 
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 10px; /* Espacio extra debajo del título */
+}
+
+#abmOverlay, .abm-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10,10,30,0.45);
+  z-index: 9999;
+  padding: 20px;
+}
+
+.abm-panel {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(21,26,66,0.08);
+}
+
+.abm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* pequeñas adaptaciones para inputs y layout dentro del modal (si no están ya) */
+.abm-form { display: grid; gap: 12px; }
+.row label { font-size: 13px; margin-bottom: 6px; color: #333; }
+.row input[type="text"], .row input[type="number"], .row select {
+  padding: 8px 10px; border: 1px solid #d0d5e9; border-radius: 6px; background: #fafafa;
+}
+.split { display: flex; gap: 12px; }
+.split .col { flex: 1; }
+.actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+@media (max-width:720px) { .split { flex-direction:column; } .abm-panel { padding:12px; } }

@@ -29,6 +29,8 @@ public class Producto {
     
     @Column(nullable = false)
     private boolean activo = true;
+
+    
     
     @ManyToOne
     @JoinColumn(name = "categoria_id")
@@ -37,5 +39,8 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
+
+    public CategoriaProducto getCategoria() { return categoria; }
+    public void setCategoria(CategoriaProducto categoria) { this.categoria = categoria; }
 
 }
