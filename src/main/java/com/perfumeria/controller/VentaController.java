@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,6 +57,12 @@ public class VentaController {
     public ResponseEntity<VentaResponseDTO> getVentaById(@PathVariable Long id) {
         Venta venta = ventaService.findById(id);
         return ResponseEntity.ok(ventaMapper.toResponse(venta));
+    }
+
+    @GetMapping(value = "/{id}/ticket", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getTicketVenta(@PathVariable Long id) {
+        Venta venta = ventaService.findById(id);
+        return ResponseEntity.ok(ventaMapper.toTicketText(venta));
     }
 
     @DeleteMapping("/{id}")
