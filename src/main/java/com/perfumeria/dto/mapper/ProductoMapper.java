@@ -33,10 +33,12 @@ public class ProductoMapper {
         return producto;
     }
 
-    
+  
     
     public ProductoResponseDTO toResponse(Producto producto) {
+
         ProductoResponseDTO response = new ProductoResponseDTO();
+
         response.setId(producto.getId());
         response.setCodigoBarras(producto.getCodigoBarras());
         response.setNombre(producto.getNombre());
@@ -45,15 +47,17 @@ public class ProductoMapper {
         response.setStock(producto.getStock());
         response.setActivo(producto.isActivo());
         response.setImagen(producto.getImagen());
-        
+
         if (producto.getCategoria() != null) {
+            response.setCategoriaId(producto.getCategoria().getId());
             response.setCategoriaNombre(producto.getCategoria().getNombre());
         }
-        
+
         if (producto.getProveedor() != null) {
+            response.setProveedorId(producto.getProveedor().getId());
             response.setProveedorNombre(producto.getProveedor().getNombre());
         }
-        
+
         return response;
     }
 }

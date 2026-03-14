@@ -59,11 +59,48 @@ public class ProductoServiceImpl implements IProductoService{
         return productoRepository.findByActivoTrue();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Producto obtenerPorId(Long id) {
+    return productoRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    }
+
+    @Override
+    public void inactivarProducto(Long id) {
+        Producto producto = productoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        producto.setActivo(false);
+
+        productoRepository.save(producto);
+    }
 
     @Override
     @Transactional(readOnly = true)
     public Producto obtenerPorCodigoBarras(String codigoBarras) {
         return productoRepository.findByCodigoBarrasAndActivoTrue(codigoBarras).orElseThrow(() -> new ProductoNotFoundException("No se encontró el producto con código de barras: " + codigoBarras));
+    }
+
+    @Transactional
+    public Producto actualizarProducto(Producto producto) {
+
+    Producto existente = productoRepository.findById(producto.getId())
+        .orElseThrow(() -> new ProductoNotFoundException(producto.getId()));
+
+    existente.setCodigoBarras(producto.getCodigoBarras());
+    existente.setNombre(producto.getNombre());
+    existente.setPrecio(producto.getPrecio());
+    existente.setPrecioCosto(producto.getPrecioCosto());
+    existente.setStock(producto.getStock());
+    existente.setCategoria(producto.getCategoria());
+    existente.setProveedor(producto.getProveedor());
+
+    if (producto.getImagen() != null) {
+        existente.setImagen(producto.getImagen());
+    }
+
+    return productoRepository.save(existente);
     }
 
     @Override

@@ -39,6 +39,21 @@ public class ProductoController {
     private String uploadDir;
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoResponseDTO> obtenerProductoPorId(@PathVariable Long id) {
+
+        Producto producto = productoService.obtenerPorId(id);
+
+        return ResponseEntity.ok(productoMapper.toResponse(producto));
+    }
+
+    @PutMapping("/{id}/inactivar")
+    public ResponseEntity<Void> inactivarProducto(@PathVariable Long id) {
+
+        productoService.inactivarProducto(id);
+
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductoResponseDTO> crearProducto(
@@ -109,5 +124,35 @@ public class ProductoController {
         Producto actualizado = productoService.actualizarPrecioYStock(id, precio, precioCosto, stock);
         return ResponseEntity.ok(productoMapper.toResponse(actualizado));
     }
+
+    @PutMapping(value="/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public ResponseEntity<ProductoResponseDTO> actualizarProducto(
+        @PathVariable Long id,
+        @RequestPart("producto") ProductoRequestDTO request,
+        @RequestPart(value = "imagen", required = false) MultipartFile imagen) {
+
+    Producto producto = productoMapper.toEntity(request);
+    producto.setId(id);
+
+    if (imagen != null && !imagen.isEmpty()) {
+        try {
+            String carpeta = "C:\\Users\\Abril\\OneDrive\\Pictures\\PPS";
+            String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
+
+            Path ruta = Paths.get(carpeta + nombreArchivo);
+            Files.createDirectories(ruta.getParent());
+            Files.copy(imagen.getInputStream(), ruta, StandardCopyOption.REPLACE_EXISTING);
+
+            producto.setImagen(nombreArchivo);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    Producto actualizado = productoService.actualizarProducto(producto);
+
+    return ResponseEntity.ok(productoMapper.toResponse(actualizado));
+}
 
 }

@@ -57,7 +57,7 @@ body {
 }
 
 .home-btn {
-    background: #5f6bdc;
+    background: #5fdc89;
     color: white;
     padding: 10px 18px;
     text-decoration: none;
@@ -86,6 +86,7 @@ body {
     font-size: 11px;
     cursor: pointer;
 }
+
 
 .buscar {
     padding: 10px 22px;
@@ -145,6 +146,10 @@ body {
     letter-spacing: 1px;
     margin-bottom: 10px; /* Espacio extra debajo del título */
     
+}
+
+.swal2-container {
+    z-index: 99999 !important;
 }
 
 #abmOverlay, .abm-overlay {

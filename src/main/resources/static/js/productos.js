@@ -1,28 +1,111 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     cargarProductos();
 
-    document.getElementById('buscarProductoBtn').addEventListener('click', buscarProductos);
-    document.getElementById('cargarProductoBtn').addEventListener('click', abrirAbmProducto);
+    document.getElementById("productoNombre").addEventListener("input", buscarProducto);
+    document.getElementById("proveedorNombre").addEventListener("input", buscarProducto);
+
+      document.getElementById('cargarProductoBtn')
+        .addEventListener('click', () => abrirAbmProducto());
+
     document.addEventListener("click", function(e) {
+
         if (e.target.classList.contains("btn-editar")) {
             const id = e.target.dataset.id;
             abrirAbmProducto(id);
         }
+
+        if (e.target.classList.contains("btn-eliminar")) {
+            const id = e.target.dataset.id;
+            eliminarProducto(id);
+        }
+
     });
 
 });
 
+function buscarProducto() {
+
+    const nombreBuscado = document.getElementById("productoNombre").value.toLowerCase();
+    const proveedorBuscado = document.getElementById("proveedorNombre").value.toLowerCase();
+
+    const filas = document.querySelectorAll("#lista-productos .fila:not(.encabezado)");
+
+    filas.forEach(fila => {
+
+        const nombre = fila.children[0].textContent.toLowerCase();
+        const proveedor = fila.children[1].textContent.toLowerCase();
+
+        const coincideNombre = nombre.includes(nombreBuscado);
+        const coincideProveedor = proveedor.includes(proveedorBuscado);
+
+        if (coincideNombre && coincideProveedor) {
+            fila.style.display = "grid";
+        } else {
+            fila.style.display = "none";
+        }
+
+    });
+
+}
+
+async function eliminarProducto(id) {
+
+    const result = await Swal.fire({
+        title: "¿Inactivar producto?",
+        text: "El producto dejará de aparecer en el listado.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, inactivar",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+
+        const res = await fetch(`http://localhost:8080/productos/${id}/inactivar`, {
+            method: "PUT"
+        });
+
+        if (!res.ok) throw new Error("Error al eliminar");
+
+        Swal.fire({
+            title: "Producto inactivado",
+            text: "El producto fue dado de baja correctamente.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        cargarProductos();
+
+    } catch (err) {
+        console.error("Error eliminando producto:", err);
+
+        Swal.fire({
+            title: "Error",
+            text: "No se pudo eliminar el producto",
+            icon: "error"
+        });
+    }
+}
+
 function cargarProductos() {
     fetch('http://localhost:8080/productos/listado-productos')
-        .then(response => {
-            if (!response.ok) throw new Error('Error al cargar los productos');
-            return response.json();
-        })
-        .then(data => {
-            console.log('Datos recibidos:', data);
-            mostrarProductos(data);
-        })
-        .catch(error => console.error('Error:', error));
+    .then(async response => {
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensaje || "Error al cargar los productos");
+        }
+        return response.json();
+      }).then(data => {
+        console.log('Datos recibidos:', data);
+        mostrarProductos(data);
+      }).catch(error => console.error('Error:', error));
 }
 
 function mostrarProductos(productos) {
@@ -52,7 +135,7 @@ function mostrarProductos(productos) {
         fila.className = 'fila';
 
         const nombre = producto.nombre || 'Sin nombre';
-        const proveedor = producto.proveedor ? producto.proveedor.nombre : 'N/A';
+        const proveedor = producto.proveedorNombre || 'N/A';
         const precio = producto.precio !== undefined ? Number(producto.precio).toFixed(2) : '0.00';
         const stock = producto.stock !== undefined ? producto.stock : 0;
 
@@ -63,6 +146,7 @@ function mostrarProductos(productos) {
             <span>${escapeHtml(stock)} unidades</span>
             <span>
               <button class="btn-editar" data-id="${producto.id}">✏️</button>
+              <button class="btn-eliminar" data-id="${producto.id}">🗑️</button>
             </span>
         `;
 
@@ -176,6 +260,8 @@ async function abrirAbmProducto(id = null) {
     }
   }
 
+  
+
   if (!form) {
     console.warn('No se encontró formulario #productoForm en el template/modal.');
     return;
@@ -197,7 +283,7 @@ async function abrirAbmProducto(id = null) {
         overlay.querySelector('#proveedor').value = producto.proveedorId || '';
 
         const titulo = overlay.querySelector('#abmTitle');
-        if (titulo) titulo.textContent = "Editar Producto";
+        if (titulo) titulo.textContent = "Editar Producto" + (producto.nombre ? `: ${producto.nombre}` : '');
 
     } catch (err) {
         console.error("Error cargando producto:", err);
@@ -246,29 +332,60 @@ async function abrirAbmProducto(id = null) {
     console.log("Enviando producto con imagen...");
 
     try {
-        const url = id ? `http://localhost:8080/productos/${id}`: 'http://localhost:8080/productos';
-        const method = id ? 'PUT' : 'POST';
 
-        const res = await fetch(url, {
-            method: method,
-            body: formData
-        });
+    const url = id ? `http://localhost:8080/productos/${id}` : 'http://localhost:8080/productos';
+    const method = id ? 'PUT' : 'POST';
 
-        if (!res.ok) {
-            const errText = await res.text().catch(() => null);
-            throw new Error(`Error del servidor: ${res.status} ${errText || res.statusText}`);
+    const res = await fetch(url, {
+        method: method,
+        body: formData
+    });
+
+    if (!res.ok) {
+
+        let mensaje = "Error al guardar el producto";
+
+        const text = await res.text(); // SIEMPRE lee el body
+
+        try {
+            const json = JSON.parse(text);
+            if (json.mensaje) mensaje = json.mensaje;
+        } catch {
+            if (text) mensaje = text;
         }
 
-        const nuevoProducto = await res.json().catch(() => null);
-        console.log('Producto creado:', nuevoProducto);
-
-        cargarProductos();
-        close();
-
-    } catch (err) {
-        console.error('No se pudo guardar el producto:', err);
-        alert('Error al guardar el producto.');
+        throw new Error(mensaje);
     }
+
+    const nuevoProducto = await res.json().catch(() => null);
+
+    console.log("Producto creado:", nuevoProducto);
+
+    await Swal.fire({
+        title: "Producto guardado",
+        text: "El producto se guardó correctamente",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false
+    });
+
+    cargarProductos();
+    close();
+
+} catch (err) {
+
+    console.error("No se pudo guardar el producto:", err);
+
+    await Swal.fire({
+        target: document.body,
+        title: "Error",
+        text: err.message || "Error inesperado",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+    });
+
+}
+
   });
 }
 

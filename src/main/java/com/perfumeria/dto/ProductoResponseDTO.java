@@ -18,4 +18,6 @@ public class ProductoResponseDTO {
     private String categoriaNombre;
     private String proveedorNombre;
     private String imagen;
+    private Long categoriaId;
+    private Long proveedorId;
 }
