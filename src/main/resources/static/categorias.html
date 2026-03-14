@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Categorías</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/productos.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+<h2>SISTEMA DE<br>INVENTARIO</h2>
+
+<nav>
+<a href="productos.html">Productos</a>
+<a href="proveedores.html">Proveedores</a>
+<a class="active">Categorias</a>
+<a href="ventas.html">Ven</a>
+</nav>
+
+</aside>
+
+
+<div class="main">
+
+<header class="topbar">
+<h1>CATEGORÍAS</h1>
+<a href="dashboard.html" class="home-btn">HOME</a>
+</header>
+
+
+<section class="content">
+
+<div class="filtros">
+
+<button class="btn" id="cargarCategoriaBtn">
+CARGAR<br>CATEGORIA
+</button>
+
+<div class="campo">
+<label>NOMBRE</label>
+<input type="text" id="categoriaNombre" placeholder="Buscar categoría">
+</div>
+
+</div>
+
+<p class="total">
+TOTAL CATEGORÍAS: <span id="totalCount">0</span>
+</p>
+
+
+<div class="lista" id="lista-categorias">
+
+<div class="fila encabezado">
+<span>NOMBRE</span>
+<span>ACCIONES</span>
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+<script src="js/categorias.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,4 +48,27 @@ public class CategoriaProductoController {
         return ResponseEntity.ok(categorias);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoriaProducto> obtenerCategoriaPorId(@PathVariable Long id) {
+        CategoriaProducto categoria = categoriaService.buscarPorId(id);
+        return ResponseEntity.ok(categoria);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoriaProducto> actualizarCategoria(
+            @PathVariable Long id,
+            @RequestBody CategoriaProducto categoria) {
+
+        CategoriaProducto existente = categoriaService.buscarPorId(id);
+        existente.setNombre(categoria.getNombre());
+
+        CategoriaProducto actualizado = categoriaService.crearCategoria(existente); // O un método actualizar si querés
+        return ResponseEntity.ok(actualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCategoria(@PathVariable Long id) {
+        categoriaService.eliminarCategoria(id);
+        return ResponseEntity.noContent().build();
+    }
 }
