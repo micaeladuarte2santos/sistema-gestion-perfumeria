@@ -226,3 +226,65 @@ body {
   .split { flex-direction:column; } 
   .abm-panel { padding:12px; } 
 }
+
+.fila-producto {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.fila-producto.encabezado {
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* CONTENEDOR SCROLL */
+.tabla-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* TABLA */
+.lista {
+    min-width: 900px; /* 👈 evita que se rompa */
+}
+
+/* FILAS */
+.fila {
+    display: grid;
+    grid-template-columns: 
+        1.5fr  /* cliente */
+        2fr    /* fecha */
+        1fr    /* total */
+        1.5fr  /* metodo pago */
+        1fr    /* estado */
+        1fr;   /* acciones */
+    gap: 10px;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+
+.encabezado {
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+    background: #f9f9f9;
+}
+
+
+.fila span:last-child {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+}
+
+.encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}

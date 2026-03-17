@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Categorías</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="css/productos.css">
 </head>
 
@@ -12,65 +12,71 @@
 
 <div class="layout">
 
-<aside class="sidebar">
-<h2>Sistema de<br>Inventario</h2>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>Sistema de<br>Inventario</h2>
 
-<nav>
-<a href="productos.html">Productos</a>
-<a href="proveedores.html">Proveedores</a>
-<a class="active">Categorias</a>
-<a href="ventas.html">Ventas</a>
-</nav>
-
-</aside>
-
-
-<div class="main">
-
-<header class="topbar">
-<h1>CATEGORÍAS</h1>
-<a href="home.html" class="home-btn">HOME</a>
-</header>
+        <nav>
+            <a href="productos.html">Productos</a>
+            <a href="proveedores.html">Proveedores</a>
+            <a class="active">Categorías</a>
+            <a href="ventas.html">Ventas</a>
+        </nav>
+    </aside>
 
 
-<section class="content">
+    <!-- MAIN -->
+    <div class="main">
 
-<div class="filtros">
-
-<button class="btn" id="cargarCategoriaBtn">
-CARGAR<br>CATEGORIA
-</button>
-
-<div class="campo">
-<label>NOMBRE</label>
-<input type="text" id="categoriaNombre" placeholder="Buscar categoría">
-</div>
-
-</div>
-
-<p class="total">
-TOTAL CATEGORÍAS: <span id="totalCount">0</span>
-</p>
+        <!-- HEADER -->
+        <header class="topbar">
+            <h1>CATEGORÍAS</h1>
+            <a href="home.html" class="home-btn">HOME</a>
+        </header>
 
 
-<div class="lista" id="lista-categorias">
+        <!-- CONTENIDO -->
+        <section class="content">
 
-<div class="fila encabezado">
-<span>NOMBRE</span>
-<span>ACCIONES</span>
-</div>
+            <!-- FILTROS -->
+            <div class="filtros">
 
-</div>
+                <button class="btn" id="cargarCategoriaBtn">
+                    CARGAR<br>CATEGORÍA
+                </button>
 
-</section>
+                <div class="campo">
+                    <label>NOMBRE</label>
+                    <input type="text" id="categoriaNombre" placeholder="Buscar categoría">
+                </div>
 
-</div>
+            </div>
+
+            <!-- TOTAL -->
+            <p class="total">
+                TOTAL CATEGORÍAS: <span id="totalCount">0</span>
+            </p>
+
+            <!-- TABLA -->
+            <div class="tabla-container">
+                <div class="lista" id="lista-categorias">
+
+                    <div class="fila encabezado">
+                        <span>NOMBRE</span>
+                        <span>ACCIONES</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
 
 </div>
 
 <script src="js/categorias.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

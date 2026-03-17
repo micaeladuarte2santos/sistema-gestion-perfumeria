@@ -5,9 +5,137 @@
     <title>Ventas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="css/ventas.css">
+    <link rel="stylesheet" href="css/productos.css">
 </head>
 <body>
-<h1>VENTAS</h1>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2>Sistema de<br>Inventario</h2>
+        <nav>
+            <a href="productos.html">Productos</a>
+            <a href="proveedores.html">Proveedores</a>
+            <a href="categorias.html">Categorias</a>
+            <a class="active">Ventas</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+
+        <header class="topbar">
+            <h1>VENTAS</h1>
+            <a href="home.html" class="home-btn">HOME</a>
+        </header>
+
+        <section class="content">
+
+            <div class="filtros">
+                <button class="btn" id="cargarVentaBtn">CARGAR<br>VENTA</button>
+
+                <div class="campo">
+                    <label>CLIENTE</label>
+                    <input type="text" id="clienteNombre">
+                </div>
+
+                <div class="campo">
+                    <label>ESTADO</label>
+                    <input type="text" id="estadoVenta">
+                </div>
+            </div>
+
+            <p class="total">TOTAL VENTAS: <span id="totalCount">0</span></p>
+
+            <div class="tabla-container">
+                <div class="lista" id="lista-ventas">
+                <div class="fila encabezado">
+                    <span>CLIENTE</span>
+                    <span>FECHA</span>
+                    <span>TOTAL</span>
+                    <span>ESTADO</span>
+                    <span>ACCIONES</span>
+                </div>
+            </div>
+            </div>
+            
+
+        </section>
+
+    </div>
+</div>
+
+
+<template id="abmVentas">
+    <div class="abm-overlay">
+        <div class="abm-panel">
+
+            <div class="abm-header">
+                <h2 id="abmTitle">Nueva Venta</h2>
+                <button class="close" id="btnCerrar">×</button>
+            </div>
+
+            <form id="ventaForm" class="abm-form">
+
+                <div class="row">
+                    <label>Cliente</label>
+                    <input type="text" name="nombreCliente" required>
+                </div>
+
+                
+                <div class="row">
+                    <label>Productos</label>
+
+                    <button type="button" id="btnAgregarProducto">+ Agregar producto</button>
+
+                    <div id="detalleProductos">
+                        
+                        <div class="fila encabezado">
+                            <span>Producto</span>
+                            <span>Cantidad</span>
+                            <span>Precio Unitario</span>
+                            <span>Subtotal</span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                
+                <div class="row">
+                    <label>Total</label>
+                    <input type="number" id="totalVenta" readonly>
+                </div>
+
+                <div class="split">
+                    <div class="col row">
+                        <label>Método de Pago</label>
+                        <select name="metodoPago" required>
+                            <option value="">Seleccione</option>                            
+                        </select>
+                    </div>
+                 
+                </div>
+
+                <div class="col row" id="estadoContainer">
+                    <label>Estado</label>
+                    <select name="estado">
+                        <option value="">Seleccione</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button type="button" id="btnCancelar">Cancelar</button>
+                    <button type="submit">Guardar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</template>
+
+<script src="js/ventas.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>

@@ -10,6 +10,7 @@ import com.perfumeria.services.impl.VentaServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import com.perfumeria.models.EstadoVentaEnum;
+import com.perfumeria.models.MetodoPagoEnum;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,6 +73,16 @@ public class VentaController {
         ventaService.deleteById(id);
         return ResponseEntity.noContent().build(); 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VentaResponseDTO> actualizarVenta(
+            @PathVariable Long id,
+            @RequestBody VentaRequestDTO request) { 
+        
+        Venta ventaActualizada = ventaService.updateVenta(id, request);
+        return ResponseEntity.ok(ventaMapper.toResponse(ventaActualizada));
+    }
+
 
     @PutMapping("/{id}/estado/{estado}")
     public ResponseEntity<VentaResponseDTO> actualizarEstado(@PathVariable Long id, @PathVariable EstadoVentaEnum estado) {

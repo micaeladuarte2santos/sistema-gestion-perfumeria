@@ -1,0 +1,45 @@
+<template id="abmVentas">
+<div class="abm-overlay">
+  <div class="abm-panel">
+
+    <div class="abm-header">
+      <h2 id="abmTitle">Nueva Venta</h2>
+      <button class="close" id="btnCerrar">×</button>
+    </div>
+
+    <form id="ventaForm" class="abm-form">
+
+      <div class="row">
+        <label>Cliente</label>
+        <input type="text" name="nombreCliente" required>
+      </div>
+
+      <div class="split">
+        <div class="col row">
+          <label>Método de Pago</label>
+          <select name="metodoPago" required>
+            <option value="">--Seleccione--</option>
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="TARJETA">Tarjeta</option>
+          </select>
+        </div>
+
+        <div class="col row">
+          <label>Estado</label>
+          <select name="estado">
+            <option value="PENDIENTE">Pendiente</option>
+            <option value="COMPLETADA">Completada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="btnCancelar">Cancelar</button>
+        <button type="submit">Guardar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+</template>

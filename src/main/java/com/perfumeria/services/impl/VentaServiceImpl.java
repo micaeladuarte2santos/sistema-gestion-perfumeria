@@ -1,5 +1,7 @@
 package com.perfumeria.services.impl;
 
+import com.perfumeria.dto.DetalleVentaRequestDTO;
+import com.perfumeria.dto.VentaRequestDTO;
 import com.perfumeria.exception.ProductoNotFoundException;
 import com.perfumeria.exception.StockInsuficienteException;
 import com.perfumeria.exception.VentaNotFoundException;
@@ -53,11 +55,11 @@ public class VentaServiceImpl implements IVentaService {
                 throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), detalle.getCantidad());
             }
 
-            // resta del stock
+            
             producto.setStock(producto.getStock() - detalle.getCantidad());
             productoRepository.save(producto);
 
-            // calcula el subtotal
+            
             double subtotal = producto.getPrecio() * detalle.getCantidad();
             detalle.setSubtotal(subtotal);
             detalle.setProducto(producto);
@@ -69,6 +71,60 @@ public class VentaServiceImpl implements IVentaService {
         ventaGuardada.setTotal(totalVenta);
         ventaRepository.save(ventaGuardada);
         return ventaGuardada;
+    }
+
+    @Transactional
+    public Venta updateVenta(Long id, VentaRequestDTO request) {
+        Venta venta = ventaRepository.findById(id)
+                .orElseThrow(() -> new VentaNotFoundException(id));
+
+        venta.setNombreCliente(request.getNombreCliente());
+        venta.setMetodoPago(request.getMetodoPago());
+        if (request.getEstado() != null) {
+            venta.setEstado(request.getEstado());
+        }
+
+        
+        if (venta.getDetalles() != null) {
+            for (DetalleVenta dv : venta.getDetalles()) {
+                if (dv.getProducto() != null) { // ✅ protección contra null
+                    Producto p = productoRepository.findById(dv.getProducto().getId())
+                            .orElseThrow(() -> new ProductoNotFoundException(dv.getProducto().getId()));
+                    p.setStock(p.getStock() + dv.getCantidad());
+                    productoRepository.save(p);
+                }
+            }
+            detalleVentaRepository.deleteAll(venta.getDetalles());
+            venta.getDetalles().clear();
+        }
+
+        // 2️⃣ Agregar nuevos detalles
+        double totalVenta = 0.0;
+        for (DetalleVentaRequestDTO dvDTO : request.getDetalles()) {
+            Producto producto = productoRepository.findById(dvDTO.getProductoId())
+                    .orElseThrow(() -> new ProductoNotFoundException(dvDTO.getProductoId()));
+
+            if (producto.getStock() < dvDTO.getCantidad()) {
+                throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), dvDTO.getCantidad());
+            }
+
+            producto.setStock(producto.getStock() - dvDTO.getCantidad());
+            productoRepository.save(producto);
+
+            DetalleVenta dv = new DetalleVenta();
+            dv.setProducto(producto);
+            dv.setCantidad(dvDTO.getCantidad());
+            dv.setSubtotal(producto.getPrecio() * dvDTO.getCantidad());
+            dv.setVenta(venta);
+
+            detalleVentaRepository.save(dv);
+            venta.getDetalles().add(dv);
+
+            totalVenta += dv.getSubtotal();
+        }
+
+        venta.setTotal(totalVenta);
+        return ventaRepository.save(venta);
     }
 
     @Override

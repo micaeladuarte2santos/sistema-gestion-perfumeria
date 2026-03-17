@@ -18,4 +18,5 @@ public interface IVentaService {
     Double getRecaudacionPorMes(int mes, int anio);
     Double getRecaudacionPorAnio(int anio);
     Venta actualizarEstado(Long id, EstadoVentaEnum nuevoEstado);
+    Venta updateVenta(Long id, Venta ventaActualizada);
 }
