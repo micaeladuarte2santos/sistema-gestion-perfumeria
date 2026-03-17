@@ -94,7 +94,7 @@ async function eliminarProducto(id) {
 }
 
 function cargarProductos() {
-    fetch('http://localhost:8080/productos/listado-productos')
+    fetch('http://localhost:8080/productos')
     .then(async response => {
 
         if (!response.ok) {
@@ -273,6 +273,20 @@ async function abrirAbmProducto(id = null) {
         if (!res.ok) throw new Error("No se pudo cargar el producto");
 
         const producto = await res.json();
+
+        const contenedorImagen = overlay.querySelector("#contenedorImagen");
+        const imagenProducto = overlay.querySelector("#imagenProducto");
+
+        if (producto.imagen) {
+
+            imagenProducto.src = `http://localhost:8080/imagenes/${producto.imagen}`;
+            contenedorImagen.style.display = "block";
+
+        } else {
+
+            contenedorImagen.style.display = "none";
+
+        }
 
         overlay.querySelector('#codigoBarras').value = producto.codigoBarras || '';
         overlay.querySelector('#nombre').value = producto.nombre || '';

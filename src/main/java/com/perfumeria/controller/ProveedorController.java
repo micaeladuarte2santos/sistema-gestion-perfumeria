@@ -32,6 +32,24 @@ public class ProveedorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(proveedorMapper.toResponse(nuevoProveedor));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ProveedorResponseDTO> actualizarProveedor(
+        @PathVariable Long id,
+        @RequestBody ProveedorRequestDTO request) {
+
+    Proveedor proveedor = proveedorMapper.toEntity(request);
+
+    Proveedor actualizado = proveedorService.actualizarProveedor(id, proveedor);
+
+    return ResponseEntity.ok(proveedorMapper.toResponse(actualizado));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProveedorResponseDTO> obtenerProveedor(@PathVariable Long id){
+    Proveedor proveedor = proveedorService.buscarPorId(id);
+    return ResponseEntity.ok(proveedorMapper.toResponse(proveedor));
+    }
+
     @GetMapping
     public ResponseEntity<List<ProveedorResponseDTO>> listarProveedores() {
         List<ProveedorResponseDTO> proveedores = proveedorService.listarProveedores().stream()

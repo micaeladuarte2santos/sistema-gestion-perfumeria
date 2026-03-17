@@ -5,9 +5,81 @@
     <title>Proveedores</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="css/proveedores.css">
+    <link rel="stylesheet" href="css/productos.css">
 </head>
 <body>
-<h1>PROVEEDORES</h1>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Sistema de<br>Inventario</h2>
+        <nav>
+            <a href="productos.html">Productos</a>
+            <a class="active">Proveedores</a>
+            <a href="categorias.html">Categorias</a>
+            <a href="ventas.html">Ventas</a>
+        </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1>PROVEEDORES</h1>
+            <a href="home.html" class="home-btn">HOME</a>
+        </header>
+
+        <!-- Contenido -->
+        <section class="content">
+
+            <!-- Filtros -->
+            <div class="filtros">
+
+                <button class="btn" id="cargarProveedorBtn">
+                    CARGAR<br>PROVEEDOR
+                </button>
+
+                <div class="campo">
+                    <label>NOMBRE</label>
+                    <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
+                </div>
+
+                <div class="campo">
+                    <label>EMAIL</label>
+                    <input type="text" id="proveedorEmail" placeholder="Buscar email">
+                </div>
+
+            </div>
+
+            <!-- Total -->
+            <p class="total">
+                TOTAL PROVEEDORES: <span id="totalCount">0</span>
+            </p>
+
+            <!-- Lista -->
+            <div class="lista" id="lista-proveedores">
+
+                <div class="fila encabezado">
+                    <span>NOMBRE</span>
+                    <span>EMAIL</span>
+                    <span>TELEFONO</span>
+                    <span>ACCIONES</span>
+                </div>
+
+                <!-- filas dinámicas desde JS -->
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script src="js/proveedores.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>

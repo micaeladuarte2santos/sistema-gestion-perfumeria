@@ -1,0 +1,42 @@
+<div class="abm-overlay">
+  <div class="abm-panel" role="dialog" aria-modal="true" aria-labelledby="abmProveedorTitle">
+
+    <div class="abm-header">
+      <h3 id="abmProveedorTitle">Nuevo Proveedor</h3>
+      <button id="btnCerrarProveedor" class="close">×</button>
+    </div>
+
+    <form id="proveedorForm" class="abm-form">
+
+      <div class="row">
+        <label for="nombreProveedor">Nombre</label>
+        <input id="nombreProveedor" name="nombre" type="text" required>
+      </div>
+
+      <div class="row">
+        <label for="emailProveedor">Email</label>
+        <input id="emailProveedor" name="email" type="email">
+      </div>
+
+      <div class="row">
+        <label for="telefonoProveedor">Teléfono</label>
+        <input id="telefonoProveedor" name="telefono" type="text">
+      </div>
+
+      <div class="row">
+        <label for="activoProveedor">Estado</label>
+        <div class="checkbox-wrap">
+          <input id="activoProveedor" name="activo" type="checkbox" checked>
+          <label for="activoProveedor">Activo</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="primary">Guardar</button>
+        <button type="button" id="btnCancelarProveedor">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

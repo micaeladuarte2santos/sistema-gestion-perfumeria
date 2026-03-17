@@ -29,6 +29,11 @@ public class ProveedorServiceImpl implements IProveedorService {
         return proveedorRepository.save(proveedor);
     }
 
+    public Proveedor buscarPorId(Long id){
+    return proveedorRepository.findById(id)
+        .orElseThrow(() -> new ProveedorNotFoundException(id));
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Proveedor> listarProveedores() {
@@ -41,5 +46,18 @@ public class ProveedorServiceImpl implements IProveedorService {
         Proveedor proveedor = proveedorRepository.findById(id).orElseThrow(() -> new ProveedorNotFoundException(id));
         proveedor.setActivo(false);
         proveedorRepository.save(proveedor);
+    }
+
+    @Transactional
+    public Proveedor actualizarProveedor(Long id, Proveedor proveedorActualizado){
+
+    Proveedor proveedor = proveedorRepository.findById(id)
+        .orElseThrow(() -> new ProveedorNotFoundException(id));
+
+    proveedor.setNombre(proveedorActualizado.getNombre());
+    proveedor.setEmail(proveedorActualizado.getEmail());
+    proveedor.setTelefono(proveedorActualizado.getTelefono());
+
+    return proveedorRepository.save(proveedor);
     }
 }
