@@ -32,45 +32,62 @@
         </header>
 
         <!-- Contenido -->
-        
-            <section class="content">
+        <section class="content">
 
-        <!-- Filtros -->
-        <div class="filtros">
-            <button class="btn" id="cargarProductoBtn">CARGAR<br>PRODUCTO</button>
-            <div class="campo">
-                <label>NOMBRE</label>
-                <input type="text" id="productoNombre" placeholder="Buscar producto">
+            <!-- Filtros -->
+            <div class="filtros">
+
+                <!-- 🔥 BOTÓN MODERNO -->
+                <button class="btn-primary" id="cargarProductoBtn">
+                    + Nuevo Producto
+                </button>
+
+                <div class="campo">
+                    <label>NOMBRE</label>
+                    <input 
+                        type="text" 
+                        id="productoNombre" 
+                        placeholder="Buscar producto..."
+                    >
+                </div>
+
+                <div class="campo">
+                    <label>PROVEEDOR</label>
+                    <input 
+                        type="text" 
+                        id="proveedorNombre" 
+                        placeholder="Buscar proveedor..."
+                    >
+                </div>
+
             </div>
-            <div class="campo">
-                <label>PROVEEDOR</label>
-                <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
+
+            <!-- Total -->
+            <p class="total">
+                TOTAL PRODUCTOS: <span id="totalCount">0</span>
+            </p>
+
+            <!-- 🔥 TABLA CONSISTENTE -->
+            <div class="tabla-container">
+                <div class="lista" id="lista-productos">
+
+                    <div class="fila encabezado">
+                        <span>NOMBRE</span>
+                        <span>PROVEEDOR</span>
+                        <span>PRECIO</span>
+                        <span>STOCK</span>
+                        <span>ACCIONES</span>
+                    </div>
+
+                    <!-- filas dinámicas -->
+
+                </div>
             </div>
-            
-        </div>
 
-        <!-- Total -->
-        <p class="total">TOTAL PRODUCTOS: <span id="totalCount">0</span></p>
-
-        <!-- Lista -->
-        <div class="lista" id="lista-productos">
-            <!-- El encabezado debe estar AQUÍ -->
-            <div class="fila encabezado">
-                <span>NOMBRE</span>
-                <span>PROVEEDOR</span>
-                <span>PRECIO</span>
-                <span>STOCK</span>
-                <span>ACCIONES</span>
-            </div>
-            <!-- Aquí entrarán los datos desde JS -->
-        </div>
-
-    </section>
+        </section>
 
     </div>
 
-        
-    
 </div>
 
 <script src="js/productos.js"></script>

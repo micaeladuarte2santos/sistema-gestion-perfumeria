@@ -43,9 +43,12 @@ public class VentaController {
 
     @PostMapping
     public ResponseEntity<VentaResponseDTO> crearVenta(@RequestBody VentaRequestDTO request) {
-        Venta venta = ventaMapper.toEntity(request);
-        Venta nuevaVenta = ventaService.createVenta(venta);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ventaMapper.toResponse(nuevaVenta));
+
+        Venta nuevaVenta = ventaService.createVenta(request); // ✅ ahora sí
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ventaMapper.toResponse(nuevaVenta));
     }
 
     @GetMapping

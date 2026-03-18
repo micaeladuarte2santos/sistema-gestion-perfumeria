@@ -1,5 +1,6 @@
 package com.perfumeria.services;
 
+import com.perfumeria.dto.VentaRequestDTO;
 import com.perfumeria.models.EstadoVentaEnum;
 import com.perfumeria.models.Venta;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface IVentaService {
 
-    Venta createVenta(Venta venta);
+    public Venta createVenta(VentaRequestDTO request);
     Venta findById(Long id);
     List<Venta> findAll();
     void deleteById(Long id);

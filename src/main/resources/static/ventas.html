@@ -31,33 +31,43 @@
         <section class="content">
 
             <div class="filtros">
-                <button class="btn" id="cargarVentaBtn">CARGAR<br>VENTA</button>
+
+                <!-- 🔥 BOTÓN MEJORADO -->
+                <button class="btn-primary" id="cargarVentaBtn">
+                    + Nueva Venta
+                </button>
 
                 <div class="campo">
                     <label>CLIENTE</label>
-                    <input type="text" id="clienteNombre">
+                    <input type="text" id="clienteNombre" placeholder="Buscar cliente...">
                 </div>
 
                 <div class="campo">
                     <label>ESTADO</label>
-                    <input type="text" id="estadoVenta">
+                    <input type="text" id="estadoVenta" placeholder="Ej: PENDIENTE">
                 </div>
+
+                <div class="campo">
+                    <label>MÉTODO DE PAGO</label>
+                    <input type="text" id="metodoPagoFiltro" placeholder="Ej: EFECTIVO">
+                </div>
+
             </div>
 
             <p class="total">TOTAL VENTAS: <span id="totalCount">0</span></p>
 
             <div class="tabla-container">
                 <div class="lista" id="lista-ventas">
-                <div class="fila encabezado">
-                    <span>CLIENTE</span>
-                    <span>FECHA</span>
-                    <span>TOTAL</span>
-                    <span>ESTADO</span>
-                    <span>ACCIONES</span>
+                    <div class="fila encabezado">
+                        <span>CLIENTE</span>
+                        <span>FECHA</span>
+                        <span>TOTAL</span>
+                        <span>MÉTODO</span>
+                        <span>ESTADO</span>
+                        <span>ACCIONES</span>
+                    </div>
                 </div>
             </div>
-            </div>
-            
 
         </section>
 
@@ -65,6 +75,7 @@
 </div>
 
 
+<!-- 🔥 MODAL (solo aparece cuando lo abrís) -->
 <template id="abmVentas">
     <div class="abm-overlay">
         <div class="abm-panel">
@@ -81,26 +92,27 @@
                     <input type="text" name="nombreCliente" required>
                 </div>
 
-                
                 <div class="row">
-                    <label>Productos</label>
+                    <div class="row-header">
+                        <label>Productos</label>
 
-                    <button type="button" id="btnAgregarProducto">+ Agregar producto</button>
+                        <!-- 🔥 BOTÓN LINDO -->
+                        <button type="button" id="btnAgregarProducto" class="btn-secondary">
+                            + Agregar
+                        </button>
+                    </div>
 
                     <div id="detalleProductos">
-                        
                         <div class="fila encabezado">
                             <span>Producto</span>
                             <span>Cantidad</span>
-                            <span>Precio Unitario</span>
+                            <span>Precio</span>
                             <span>Subtotal</span>
                             <span></span>
                         </div>
-
                     </div>
-
                 </div>
-                
+
                 <div class="row">
                     <label>Total</label>
                     <input type="number" id="totalVenta" readonly>
@@ -110,10 +122,9 @@
                     <div class="col row">
                         <label>Método de Pago</label>
                         <select name="metodoPago" required>
-                            <option value="">Seleccione</option>                            
+                            <option value="">Seleccione</option>
                         </select>
                     </div>
-                 
                 </div>
 
                 <div class="col row" id="estadoContainer">
@@ -125,7 +136,7 @@
 
                 <div class="actions">
                     <button type="button" id="btnCancelar">Cancelar</button>
-                    <button type="submit">Guardar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
                 </div>
 
             </form>

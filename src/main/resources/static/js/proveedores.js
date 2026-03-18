@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const buscarNombre = document.getElementById("proveedorNombre");
     const buscarEmail = document.getElementById("proveedorEmail");
+    const buscarTelefono = document.getElementById("proveedorTelefono");
+
+    buscarTelefono?.addEventListener("input", filtrarProveedores);
 
     buscarNombre?.addEventListener("input", filtrarProveedores);
     buscarEmail?.addEventListener("input", filtrarProveedores);
@@ -13,27 +16,31 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener("click", () => abrirAbmProveedor());
     }
 
+
 });
 
 let proveedoresCache = [];
 
 function filtrarProveedores(){
 
-const nombre = document.getElementById("proveedorNombre").value.toLowerCase();
-const email = document.getElementById("proveedorEmail").value.toLowerCase();
+    const nombre = document.getElementById("proveedorNombre").value.toLowerCase();
+    const email = document.getElementById("proveedorEmail").value.toLowerCase();
+    const telefono = document.getElementById("proveedorTelefono").value.toLowerCase();
 
-const filtrados = proveedoresCache.filter(p => {
+    const filtrados = proveedoresCache.filter(p => {
 
-return (
-p.nombre.toLowerCase().includes(nombre) &&
-(p.email || "").toLowerCase().includes(email)
-);
+        return (
+            p.nombre.toLowerCase().includes(nombre) &&
+            (p.email || "").toLowerCase().includes(email) &&
+            (p.telefono || "").toLowerCase().includes(telefono)
+        );
 
-});
+    });
 
-renderProveedores(filtrados);
-
+    renderProveedores(filtrados);
 }
+
+
 
 async function abrirAbmProveedor(id = null) {
 

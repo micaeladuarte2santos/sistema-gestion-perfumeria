@@ -288,3 +288,81 @@ body {
     top: 0;
     z-index: 2;
 }
+
+.btn-primary {
+    background: linear-gradient(135deg, #4CAF50, #2ecc71);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #2980b9;
+}
+
+.row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.abm-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+
+    width: 90%;
+    max-width: 1000px; /* 🔥 más grande como antes */
+    
+    max-height: 90vh; /* 🔥 evita que se desborde */
+    overflow-y: auto; /* 🔥 scroll interno */
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.abm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #999;
+}
+
+.close:hover {
+    color: black;
+}
+
+input, select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}

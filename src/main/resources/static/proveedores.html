@@ -11,7 +11,7 @@
 
 <div class="layout">
 
-    <!-- Sidebar -->
+   
     <aside class="sidebar">
         <h2>Sistema de<br>Inventario</h2>
         <nav>
@@ -22,54 +22,70 @@
         </nav>
     </aside>
 
-    <!-- Contenido principal -->
+   
     <div class="main">
 
-        <!-- Topbar -->
+        
         <header class="topbar">
             <h1>PROVEEDORES</h1>
             <a href="home.html" class="home-btn">HOME</a>
         </header>
 
-        <!-- Contenido -->
+        
         <section class="content">
 
-            <!-- Filtros -->
+          
             <div class="filtros">
 
-                <button class="btn" id="cargarProveedorBtn">
-                    CARGAR<br>PROVEEDOR
+                
+                <button class="btn-primary" id="cargarProveedorBtn">
+                    + Nuevo Proveedor
                 </button>
 
                 <div class="campo">
                     <label>NOMBRE</label>
-                    <input type="text" id="proveedorNombre" placeholder="Buscar proveedor">
+                    <input 
+                        type="text" 
+                        id="proveedorNombre" 
+                        placeholder="Buscar proveedor"
+                    >
                 </div>
 
                 <div class="campo">
                     <label>EMAIL</label>
-                    <input type="text" id="proveedorEmail" placeholder="Buscar email">
+                    <input 
+                        type="text" 
+                        id="proveedorEmail" 
+                        placeholder="Buscar email"
+                    >
+                </div>
+
+                <div class="campo">
+                    <label>TELÉFONO</label>
+                    <input type="text" id="proveedorTelefono" placeholder="Buscar teléfono">
                 </div>
 
             </div>
 
-            <!-- Total -->
+            
             <p class="total">
                 TOTAL PROVEEDORES: <span id="totalCount">0</span>
             </p>
 
-            <!-- Lista -->
-            <div class="lista" id="lista-proveedores">
+           
+            <div class="tabla-container">
+                <div class="lista" id="lista-proveedores">
 
-                <div class="fila encabezado">
-                    <span>NOMBRE</span>
-                    <span>EMAIL</span>
-                    <span>TELEFONO</span>
-                    <span>ACCIONES</span>
+                    <div class="fila encabezado">
+                        <span>NOMBRE</span>
+                        <span>EMAIL</span>
+                        <span>TELÉFONO</span>
+                        <span>ACCIONES</span>
+                    </div>
+
+                    
+
                 </div>
-
-                <!-- filas dinámicas desde JS -->
-
             </div>
 
         </section>

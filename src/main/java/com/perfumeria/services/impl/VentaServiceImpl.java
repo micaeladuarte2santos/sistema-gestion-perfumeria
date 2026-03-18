@@ -38,39 +38,47 @@ public class VentaServiceImpl implements IVentaService {
 
     @Override
     @Transactional
-    public Venta createVenta(Venta venta) {
+    public Venta createVenta(VentaRequestDTO request) {
 
+        Venta venta = new Venta();
         venta.setFecha(LocalDateTime.now());
         venta.setEstado(EstadoVentaEnum.PENDIENTE);
-        
+        venta.setNombreCliente(request.getNombreCliente());
+        venta.setMetodoPago(request.getMetodoPago());
+
         double totalVenta = 0.0;
+
         Venta ventaGuardada = ventaRepository.save(venta);
 
-        for (DetalleVenta detalle : venta.getDetalles()) {
+        for (DetalleVentaRequestDTO dvDTO : request.getDetalles()) {
 
-            Producto producto = productoRepository.findById(detalle.getProducto().getId())
-                .orElseThrow(() -> new ProductoNotFoundException(detalle.getProducto().getId()));
+            Producto producto = productoRepository.findById(dvDTO.getProductoId())
+                    .orElseThrow(() -> new ProductoNotFoundException(dvDTO.getProductoId()));
 
-            if (producto.getStock() < detalle.getCantidad()) {
-                throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), detalle.getCantidad());
+            if (producto.getStock() < dvDTO.getCantidad()) {
+                throw new StockInsuficienteException(
+                        producto.getNombre(),
+                        producto.getStock(),
+                        dvDTO.getCantidad()
+                );
             }
 
-            
-            producto.setStock(producto.getStock() - detalle.getCantidad());
+            producto.setStock(producto.getStock() - dvDTO.getCantidad());
             productoRepository.save(producto);
 
-            
-            double subtotal = producto.getPrecio() * detalle.getCantidad();
-            detalle.setSubtotal(subtotal);
-            detalle.setProducto(producto);
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setProducto(producto); // 🔥 clave
+            detalle.setCantidad(dvDTO.getCantidad());
+            detalle.setSubtotal(producto.getPrecio() * dvDTO.getCantidad());
             detalle.setVenta(ventaGuardada);
 
             detalleVentaRepository.save(detalle);
-            totalVenta += subtotal;
+
+            totalVenta += detalle.getSubtotal();
         }
+
         ventaGuardada.setTotal(totalVenta);
-        ventaRepository.save(ventaGuardada);
-        return ventaGuardada;
+        return ventaRepository.save(ventaGuardada);
     }
 
     @Transactional
