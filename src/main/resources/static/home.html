@@ -34,20 +34,47 @@
 
             <!-- Content -->
             <section class="content">
-                <h3>MÉTRICAS DEL MES EN CURSO</h3>
 
-                <div class="cards">
-                    <div class="card">
-                        <p>CANTIDAD DE VENTAS DEL DÍA</p>
-                        <strong>XXXX</strong>
-                    </div>
+    <h3 class="titulo-metricas">MÉTRICAS</h3>
 
-                    <div class="card">
-                        <p>TOTAL DE VENTAS DEL DÍA</p>
-                        <strong>XXXX</strong>
-                    </div>
-                </div>
-            </section>
+    <div class="cards-grid">
+
+        <!-- 🔥 HOY -->
+        <div class="card" onclick="irAVentas()">
+            <p>Ventas del día</p>
+            <strong id="ventasHoy">0</strong>
+        </div>
+
+        <div class="card"onclick="irAVentas()">
+            <p>Ingresos del día</p>
+            <strong id="montoHoy">$0</strong>
+        </div>
+
+        <!-- 🔥 MES -->
+        <div class="card destacado" onclick="irAVentas()">
+            <p>Ventas del mes</p>
+            <strong id="ventasMes">0</strong>
+        </div>
+
+        <div class="card destacado" onclick="irAVentas()">
+            <p>Ingresos del mes</p>
+            <strong id="montoMes">$0</strong>
+        </div>
+
+        <!-- 🔥 AÑO -->
+        <div class="card" onclick="irAVentas()">
+            <p>Ventas del año</p>
+            <strong id="ventasAnio">0</strong>
+        </div>
+
+        <div class="card" onclick="irAVentas()">
+            <p>Ingresos del año</p>
+            <strong id="montoAnio">$0</strong>
+        </div>
+
+    </div>
+
+</section>
 
         </div>
     </div>

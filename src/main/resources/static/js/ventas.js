@@ -35,10 +35,49 @@ function cargarVentas() {
     .then((res) => res.json())
     .then((data) => {
       ventasGlobal = data;
-      aplicarFiltros();
+
+      actualizarResumenVentas(data); // 👈 ESTO TE FALTABA
+
+      aplicarFiltros(); // lo tuyo, no lo tocamos
     })
     .catch((err) => console.error("Error:", err));
 }
+
+function actualizarContadorVentas(ventas) {
+
+    let pendientes = 0;
+    let devueltas = 0;
+    let canceladas = 0;
+    let abonadas = 0;
+    let indefinidas = 0;
+
+    ventas.forEach(v => {
+
+        switch (v.estado) {
+            case "DEVUELTA":
+                devueltas++;
+                break;
+
+            case "CANCELADA":
+                canceladas++;
+                break;
+
+            case "ABONADA":
+                abonadas++;
+                break;
+            case "PENDIENTE":
+                pendientes++;
+            default:
+                indefinidas++; 
+        }
+    });
+
+    document.getElementById("contPendientes").textContent = pendientes;
+    document.getElementById("contDevueltas").textContent = devueltas;
+    document.getElementById("contCanceladas").textContent = canceladas;
+    document.getElementById("contAbonadas").textContent = abonadas  ;
+}
+
 
 function mostrarVentas(ventas) {
   const lista = document.getElementById("lista-ventas");
@@ -282,6 +321,42 @@ async function abrirAbmVenta(id = null) {
       Swal.fire("Error al guardar la venta", "", "error");
     }
   });
+}
+
+function actualizarResumenVentas(ventas) {
+
+    let pendientes = 0;
+    let devueltas = 0;
+    let canceladas = 0;
+    let abonadas = 0;
+
+    ventas.forEach(v => {
+
+        switch (v.estado) {
+
+            case "PENDIENTE":
+                pendientes++;
+                break;
+
+            case "DEVUELTA":
+                devueltas++;
+                break;
+
+            case "CANCELADA":
+            case "ANULADA":
+                canceladas++;
+                break;
+
+            case "ABONADA":
+                abonadas++;
+                break;
+        }
+    });
+
+    document.getElementById("contPendientes").textContent = pendientes;
+    document.getElementById("contDevueltas").textContent = devueltas;
+    document.getElementById("contCanceladas").textContent = canceladas;
+    document.getElementById("contAbonadas").textContent = abonadas;
 }
 
 function agregarFilaProducto(contenedor, totalInput) {

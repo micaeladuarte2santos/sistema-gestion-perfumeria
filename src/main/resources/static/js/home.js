@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", irAVentas);
+    });
     const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
     const usuarioSpan = document.getElementById("usuarioBienvenida");
 
@@ -11,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const mes = new Date().getMonth() + 1;
     const anio = new Date().getFullYear();
 
+    function irAVentas() {
+        window.location.href = "ventas.html";
+    }
     
     fetch(`http://localhost:8080/ventas/recaudacion/dia?fecha=${hoy}`)
         .then(res => res.json())
