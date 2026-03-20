@@ -279,6 +279,7 @@ async function abrirAbmProducto(id = null) {
 
         if (producto.imagen) {
 
+            console.log("Nombre de imagen recuperado:", producto.imagen);
             imagenProducto.src = `http://localhost:8080/imagenes/${producto.imagen}`;
             contenedorImagen.style.display = "block";
 

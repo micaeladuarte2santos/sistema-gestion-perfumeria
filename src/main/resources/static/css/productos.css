@@ -383,3 +383,75 @@ input, select {
 .resumen-ventas strong {
     color: #333;
 }
+
+/* --- Estilos para la Previsualización de Imagen en ABM --- */
+
+.image-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.image-preview-container {
+  width: 180px; /* Tamaño fijo del recuadro */
+  height: 180px;
+  border: 2px dashed #b1b1b1; /* Borde punteado elegante */
+  border-radius: 12px; /* Bordes muy suaves */
+  overflow: hidden; /* Corta lo que se salga */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fcfcfc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave */
+  transition: all 0.3s ease; /* Animación suave */
+}
+
+/* Efecto hover sobre el recuadro */
+.image-preview-container:hover {
+  border-color: #f7a1b9; /* Color de tu perfumería en hover */
+  transform: translateY(-3px); /* Se levanta un poquito */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Sombra más fuerte */
+}
+
+/* Estilos para la imagen DENTRO del recuadro */
+#imagenProducto {
+  max-width: 90%; /* Deja un pequeño margen interno */
+  max-height: 90%;
+  object-fit: contain; /* Mantiene la proporción sin estirar ni cortar */
+  border-radius: 6px;
+  display: block;
+}
+
+/* --- Estilos para el botón de 'Seleccionar Archivo' (Opcional) --- */
+.file-input-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.file-input-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.btn-file {
+  background-color: #f5f5f7;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #d1d1d1;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-file:hover {
+  background-color: #e8e8ed;
+}

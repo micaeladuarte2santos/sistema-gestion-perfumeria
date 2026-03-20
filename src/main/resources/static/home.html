@@ -35,46 +35,89 @@
             <!-- Content -->
             <section class="content">
 
-    <h3 class="titulo-metricas">MÉTRICAS</h3>
+                <h3 class="titulo-metricas">MÉTRICAS</h3>
 
-    <div class="cards-grid">
+                <div class="kanban-metricas">
 
-        <!-- 🔥 HOY -->
-        <div class="card" onclick="irAVentas()">
-            <p>Ventas del día</p>
-            <strong id="ventasHoy">0</strong>
-        </div>
+                    <!-- 🔥 DÍA -->
+                    <div class="columna">
+                        <h4>Hoy</h4>
 
-        <div class="card"onclick="irAVentas()">
-            <p>Ingresos del día</p>
-            <strong id="montoHoy">$0</strong>
-        </div>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ventas del día</p>
+                            <strong id="ventasHoy">0</strong>
+                        </div>
 
-        <!-- 🔥 MES -->
-        <div class="card destacado" onclick="irAVentas()">
-            <p>Ventas del mes</p>
-            <strong id="ventasMes">0</strong>
-        </div>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ingresos del día</p>
+                            <strong id="montoHoy">$0</strong>
+                        </div>
 
-        <div class="card destacado" onclick="irAVentas()">
-            <p>Ingresos del mes</p>
-            <strong id="montoMes">$0</strong>
-        </div>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Devoluciones</p>
+                            <strong id="devHoy">0</strong>
+                        </div>
 
-        <!-- 🔥 AÑO -->
-        <div class="card" onclick="irAVentas()">
-            <p>Ventas del año</p>
-            <strong id="ventasAnio">0</strong>
-        </div>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Total devuelto</p>
+                            <strong id="montoDevHoy">$0</strong>
+                        </div>
+                    </div>
 
-        <div class="card" onclick="irAVentas()">
-            <p>Ingresos del año</p>
-            <strong id="montoAnio">$0</strong>
-        </div>
+                    <!-- 🔥 MES -->
+                    <div class="columna">
+                        <h4>Mes</h4>
 
-    </div>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ventas del mes</p>
+                            <strong id="ventasMes">0</strong>
+                        </div>
 
-</section>
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ingresos del mes</p>
+                            <strong id="montoMes">$0</strong>
+                        </div>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Devoluciones</p>
+                            <strong id="devMes">0</strong>
+                        </div>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Total devuelto</p>
+                            <strong id="montoDevMes">$0</strong>
+                        </div>
+                    </div>
+
+                    <!-- 🔥 AÑO -->
+                    <div class="columna">
+                        <h4>Año</h4>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ventas del año</p>
+                            <strong id="ventasAnio">0</strong>
+                        </div>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Ingresos del año</p>
+                            <strong id="montoAnio">$0</strong>
+                        </div>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Devoluciones</p>
+                            <strong id="devAnio">0</strong>
+                        </div>
+
+                        <div class="card" onclick="irAVentas()">
+                            <p>Total devuelto</p>
+                            <strong id="montoDevAnio">$0</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
 
         </div>
     </div>

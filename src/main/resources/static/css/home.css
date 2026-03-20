@@ -135,3 +135,44 @@ body {
 .contador-ventas strong {
     color: #333;
 }
+
+.kanban-metricas {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Cada columna */
+.columna {
+    flex: 1;
+    background-color: #e9ecf5;
+    border-radius: 16px;
+    padding: 15px;
+}
+
+/* Título de cada columna */
+.columna h4 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+/* Cards dentro de columna */
+.columna .card {
+    margin-bottom: 15px;
+}
+
+.card.devolucion {
+    border-left: 5px solid #e53935;
+}
+
+.card:hover {
+    background: linear-gradient(135deg, #5f6bdc, #7c86ff);
+    color: white;
+}
+
+/* Para que el texto también cambie */
+.card:hover p,
+.card:hover strong {
+    color: white;
+}
