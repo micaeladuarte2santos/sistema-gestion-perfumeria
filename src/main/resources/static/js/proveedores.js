@@ -23,6 +23,25 @@ const ELEMENTOS_POR_PAGINA = 5;
 let paginaActual = 1;
 let proveedoresCache = [];
 
+async function obtenerMensajeError(res, mensajePorDefecto) {
+    try {
+        const text = await res.text();
+        if (!text) return mensajePorDefecto;
+
+        try {
+            const data = JSON.parse(text);
+            if (data?.mensaje) return data.mensaje;
+            if (data?.message) return data.message;
+        } catch {
+            return text;
+        }
+
+        return text;
+    } catch {
+        return mensajePorDefecto;
+    }
+}
+
 function filtrarProveedores(){
 
     const nombre = document.getElementById("proveedorNombre").value.toLowerCase();
@@ -118,7 +137,10 @@ async function abrirAbmProveedor(id = null) {
 
             const res = await fetch(`http://localhost:8080/proveedores/${id}`);
 
-            if (!res.ok) throw new Error("No se pudo cargar el proveedor");
+            if (!res.ok) {
+                const mensaje = await obtenerMensajeError(res, "No se pudo cargar el proveedor");
+                throw new Error(mensaje);
+            }
 
             const proveedor = await res.json();
 
@@ -136,7 +158,7 @@ async function abrirAbmProveedor(id = null) {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "No se pudo cargar el proveedor"
+                text: err.message || "No se pudo cargar el proveedor"
             });
 
         }
@@ -173,17 +195,7 @@ async function abrirAbmProveedor(id = null) {
             });
 
             if (!res.ok) {
-
-                let mensaje = "Error al guardar proveedor";
-                const text = await res.text();
-
-                try {
-                    const json = JSON.parse(text);
-                    if (json.mensaje) mensaje = json.mensaje;
-                } catch {
-                    if (text) mensaje = text;
-                }
-
+                const mensaje = await obtenerMensajeError(res, "Error al guardar proveedor");
                 throw new Error(mensaje);
             }
 
@@ -324,7 +336,10 @@ async function eliminarProveedor(id) {
             method: "DELETE"
         });
 
-        if (!res.ok) throw new Error("No se pudo eliminar");
+        if (!res.ok) {
+            const mensaje = await obtenerMensajeError(res, "No se pudo eliminar");
+            throw new Error(mensaje);
+        }
 
         cargarProveedores();
 

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.perfumeria.exception.ProveedorEmailAlreadyExistsException;
 import com.perfumeria.exception.ProveedorNotFoundException;
 import com.perfumeria.models.Proveedor;
 import com.perfumeria.repositories.ProveedorRepository;
@@ -45,12 +46,14 @@ class ProveedorServiceImplTest {
     @Test
     void testAgregarProveedor_Exitoso() {
         when(proveedorRepository.findByNombre(anyString())).thenReturn(Optional.empty());
+        when(proveedorRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
         when(proveedorRepository.save(any(Proveedor.class))).thenReturn(proveedor);
         Proveedor resultado = proveedorService.agregarProveedor(proveedor);
         assertNotNull(resultado);
         assertEquals("Proveedor Test", resultado.getNombre());
         assertTrue(resultado.getActivo());
         verify(proveedorRepository, times(1)).findByNombre(proveedor.getNombre());
+        verify(proveedorRepository, times(1)).existsByEmailIgnoreCase(proveedor.getEmail());
         verify(proveedorRepository, times(1)).save(any(Proveedor.class));
     }
 
@@ -63,6 +66,22 @@ class ProveedorServiceImplTest {
 
         assertTrue(exception.getMessage().contains("Ya existe un proveedor"));
         verify(proveedorRepository, times(1)).findByNombre(proveedor.getNombre());
+        verify(proveedorRepository, never()).existsByEmailIgnoreCase(anyString());
+        verify(proveedorRepository, never()).save(any(Proveedor.class));
+    }
+
+    @Test
+    void testAgregarProveedor_LanzaExcepcionCuandoEmailYaExiste() {
+        when(proveedorRepository.findByNombre(anyString())).thenReturn(Optional.empty());
+        when(proveedorRepository.existsByEmailIgnoreCase(anyString())).thenReturn(true);
+
+        ProveedorEmailAlreadyExistsException exception = assertThrows(ProveedorEmailAlreadyExistsException.class, () -> {
+            proveedorService.agregarProveedor(proveedor);
+        });
+
+        assertTrue(exception.getMessage().contains("Ya existe un proveedor con el email"));
+        verify(proveedorRepository, times(1)).findByNombre(proveedor.getNombre());
+        verify(proveedorRepository, times(1)).existsByEmailIgnoreCase(proveedor.getEmail());
         verify(proveedorRepository, never()).save(any(Proveedor.class));
     }
 
@@ -116,9 +135,11 @@ class ProveedorServiceImplTest {
     void testAgregarProveedor_EstableceActivoEnTrue() {
         Proveedor nuevoProveedor = new Proveedor();
         nuevoProveedor.setNombre("Nuevo Proveedor");
+        nuevoProveedor.setEmail("nuevo@proveedor.com");
         nuevoProveedor.setActivo(false); // Initially false
 
         when(proveedorRepository.findByNombre(anyString())).thenReturn(Optional.empty());
+        when(proveedorRepository.existsByEmailIgnoreCase(anyString())).thenReturn(false);
         when(proveedorRepository.save(any(Proveedor.class))).thenAnswer(invocation -> {
             Proveedor p = invocation.getArgument(0);
             assertTrue(p.getActivo(), "El proveedor debe ser marcado como activo");

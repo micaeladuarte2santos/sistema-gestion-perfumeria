@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perfumeria.exception.ProveedorEmailAlreadyExistsException;
 import com.perfumeria.exception.ProveedorNotFoundException;
 import com.perfumeria.models.Proveedor;
 import com.perfumeria.repositories.ProveedorRepository;
@@ -24,6 +25,13 @@ public class ProveedorServiceImpl implements IProveedorService {
     public Proveedor agregarProveedor(Proveedor proveedor) {
         proveedorRepository.findByNombre(proveedor.getNombre())
             .ifPresent(p -> { throw new RuntimeException("Ya existe un proveedor con el mismo nombre"); });
+
+        if (proveedor.getEmail() != null && !proveedor.getEmail().isBlank()) {
+            String email = proveedor.getEmail().trim();
+            if (proveedorRepository.existsByEmailIgnoreCase(email)) {
+                throw new ProveedorEmailAlreadyExistsException(email);
+            }
+        }
 
         proveedor.setActivo(true);
         return proveedorRepository.save(proveedor);

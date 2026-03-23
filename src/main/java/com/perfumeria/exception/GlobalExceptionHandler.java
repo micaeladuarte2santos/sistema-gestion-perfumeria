@@ -17,12 +17,14 @@ public class GlobalExceptionHandler {
         StockInsuficienteException.class,
         ProductoInactivoException.class,
         ProveedorNotFoundException.class,
+		ProveedorEmailAlreadyExistsException.class,
 		UsuarioAlreadyExistsException.class,
 		UsuarioEmailAlreadyExistsException.class,
 		ProductoCodigoBarrasAlreadyExistsException.class,
         VentaNotFoundException.class,
         CodigoVerificacionInvalidoException.class,
-        CodigoVerificacionExpiradoException.class
+		CodigoVerificacionExpiradoException.class,
+		RuntimeException.class
 	})
 	public ResponseEntity<MensajeError> manejarErroresDeValidacion(RuntimeException ex) {
 		return new ResponseEntity<>(new MensajeError(ex.getMessage()), HttpStatus.BAD_REQUEST);
