@@ -19,11 +19,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.perfumeria.dto.DetalleVentaRequestDTO;
+import com.perfumeria.dto.VentaRequestDTO;
 import com.perfumeria.exception.ProductoNotFoundException;
 import com.perfumeria.exception.StockInsuficienteException;
 import com.perfumeria.exception.VentaNotFoundException;
 import com.perfumeria.models.DetalleVenta;
 import com.perfumeria.models.EstadoVentaEnum;
+import com.perfumeria.models.MetodoPagoEnum;
 import com.perfumeria.models.Producto;
 import com.perfumeria.models.Venta;
 import com.perfumeria.repositories.DetalleVentaRepository;
@@ -48,6 +51,8 @@ class VentaServiceImplTest {
     private Venta venta;
     private Producto producto;
     private DetalleVenta detalleVenta;
+    private VentaRequestDTO ventaRequestDTO;
+    private DetalleVentaRequestDTO detalleVentaRequestDTO;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +75,16 @@ class VentaServiceImplTest {
         venta.setTotal(200.0);
         venta.setEstado(EstadoVentaEnum.PENDIENTE);
         venta.setDetalles(Arrays.asList(detalleVenta));
+
+        detalleVentaRequestDTO = new DetalleVentaRequestDTO();
+        detalleVentaRequestDTO.setProductoId(1L);
+        detalleVentaRequestDTO.setCantidad(2);
+
+        ventaRequestDTO = new VentaRequestDTO();
+        ventaRequestDTO.setNombreCliente("Cliente Test");
+        ventaRequestDTO.setMetodoPago(MetodoPagoEnum.EFECTIVO);
+        ventaRequestDTO.setEstado(EstadoVentaEnum.PENDIENTE);
+        ventaRequestDTO.setDetalles(Arrays.asList(detalleVentaRequestDTO));
     }
 
     @Test
@@ -78,7 +93,7 @@ class VentaServiceImplTest {
         when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
         when(productoRepository.save(any(Producto.class))).thenReturn(producto);
         when(detalleVentaRepository.save(any(DetalleVenta.class))).thenReturn(detalleVenta);
-        Venta resultado = ventaService.createVenta(venta);
+        Venta resultado = ventaService.createVenta(ventaRequestDTO);
         assertNotNull(resultado);
         assertEquals(EstadoVentaEnum.PENDIENTE, resultado.getEstado());
         verify(ventaRepository, times(2)).save(any(Venta.class));
@@ -92,7 +107,7 @@ class VentaServiceImplTest {
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
         when(productoRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(ProductoNotFoundException.class, () -> {
-            ventaService.createVenta(venta);
+            ventaService.createVenta(ventaRequestDTO);
         });
 
         verify(productoRepository, times(1)).findById(producto.getId());
@@ -102,12 +117,12 @@ class VentaServiceImplTest {
     @Test
     void testCreateVenta_LanzaExcepcionCuandoStockInsuficiente() {
         producto.setStock(1);
-        detalleVenta.setCantidad(5);
+        detalleVentaRequestDTO.setCantidad(5);
 
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
         when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
         assertThrows(StockInsuficienteException.class, () -> {
-            ventaService.createVenta(venta);
+            ventaService.createVenta(ventaRequestDTO);
         });
 
         verify(productoRepository, times(1)).findById(producto.getId());
@@ -192,21 +207,21 @@ class VentaServiceImplTest {
     @Test
     void testGetRecaudacionPorDia_RetornaRecaudacion() {
         LocalDate fecha = LocalDate.now();
-        when(ventaRepository.getRecaudacionPorDia(any(LocalDate.class))).thenReturn(500.0);
+        when(ventaRepository.getRecaudacionPorDia(any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(500.0);
         Double resultado = ventaService.getRecaudacionPorDia(fecha);
         assertNotNull(resultado);
         assertEquals(500.0, resultado);
-        verify(ventaRepository, times(1)).getRecaudacionPorDia(fecha);
+        verify(ventaRepository, times(1)).getRecaudacionPorDia(any(LocalDateTime.class), any(LocalDateTime.class));
     }
 
     @Test
     void testGetRecaudacionPorDia_RetornaCeroCuandoEsNull() {
         LocalDate fecha = LocalDate.now();
-        when(ventaRepository.getRecaudacionPorDia(any(LocalDate.class))).thenReturn(null);
+        when(ventaRepository.getRecaudacionPorDia(any(LocalDateTime.class), any(LocalDateTime.class))).thenReturn(null);
         Double resultado = ventaService.getRecaudacionPorDia(fecha);
         assertNotNull(resultado);
         assertEquals(0.0, resultado);
-        verify(ventaRepository, times(1)).getRecaudacionPorDia(fecha);
+        verify(ventaRepository, times(1)).getRecaudacionPorDia(any(LocalDateTime.class), any(LocalDateTime.class));
     }
 
     @Test
@@ -273,18 +288,18 @@ class VentaServiceImplTest {
         producto2.setPrecio(50.0);
         producto2.setStock(20);
 
-        DetalleVenta detalle2 = new DetalleVenta();
-        detalle2.setProducto(producto2);
+        DetalleVentaRequestDTO detalle2 = new DetalleVentaRequestDTO();
+        detalle2.setProductoId(2L);
         detalle2.setCantidad(3);
 
-        venta.setDetalles(Arrays.asList(detalleVenta, detalle2));
+        ventaRequestDTO.setDetalles(Arrays.asList(detalleVentaRequestDTO, detalle2));
 
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
         when(productoRepository.findById(1L)).thenReturn(Optional.of(producto));
         when(productoRepository.findById(2L)).thenReturn(Optional.of(producto2));
         when(productoRepository.save(any(Producto.class))).thenAnswer(i -> i.getArguments()[0]);
         when(detalleVentaRepository.save(any(DetalleVenta.class))).thenAnswer(i -> i.getArguments()[0]);
-        Venta resultado = ventaService.createVenta(venta);
+        Venta resultado = ventaService.createVenta(ventaRequestDTO);
         assertNotNull(resultado);
         verify(ventaRepository, times(2)).save(any(Venta.class));
         verify(detalleVentaRepository, times(2)).save(any(DetalleVenta.class));

@@ -19,7 +19,7 @@ public interface IVentaService {
     Double getRecaudacionPorMes(int mes, int anio);
     Double getRecaudacionPorAnio(int anio);
     Venta actualizarEstado(Long id, EstadoVentaEnum nuevoEstado);
-    Venta updateVenta(Long id, Venta ventaActualizada);
+    Venta updateVenta(Long id, VentaRequestDTO ventaActualizada);
     List<Venta> findByDia(LocalDate fecha);
     Double getTotalDevolucionesDia(LocalDate fecha);
     Long getCantidadDevolucionesMes(int mes, int anio);
