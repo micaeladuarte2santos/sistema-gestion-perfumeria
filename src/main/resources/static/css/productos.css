@@ -384,6 +384,43 @@ input, select {
     color: #333;
 }
 
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.paginacion button {
+    border: 1px solid #d0d5e9;
+    background: #ffffff;
+    color: #2f3e66;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.paginacion button:hover:not(:disabled) {
+    background: #f0f4ff;
+}
+
+.paginacion button.activo {
+    background: #5f6bdc;
+    color: #ffffff;
+    border-color: #5f6bdc;
+    font-weight: bold;
+}
+
+.paginacion button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
 /* --- Estilos para la Previsualización de Imagen en ABM --- */
 
 .image-preview-wrapper {

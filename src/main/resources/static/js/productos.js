@@ -24,28 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const ELEMENTOS_POR_PAGINA = 5;
+let paginaActual = 1;
+let productosCache = [];
+
 function buscarProducto() {
 
-    const nombreBuscado = document.getElementById("productoNombre").value.toLowerCase();
-    const proveedorBuscado = document.getElementById("proveedorNombre").value.toLowerCase();
-
-    const filas = document.querySelectorAll("#lista-productos .fila:not(.encabezado)");
-
-    filas.forEach(fila => {
-
-        const nombre = fila.children[0].textContent.toLowerCase();
-        const proveedor = fila.children[1].textContent.toLowerCase();
-
-        const coincideNombre = nombre.includes(nombreBuscado);
-        const coincideProveedor = proveedor.includes(proveedorBuscado);
-
-        if (coincideNombre && coincideProveedor) {
-            fila.style.display = "grid";
-        } else {
-            fila.style.display = "none";
-        }
-
-    });
+  paginaActual = 1;
+  mostrarProductos(filtrarProductosActuales());
 
 }
 
@@ -104,8 +90,22 @@ function cargarProductos() {
         return response.json();
       }).then(data => {
         console.log('Datos recibidos:', data);
-        mostrarProductos(data);
+        productosCache = data || [];
+        paginaActual = 1;
+        mostrarProductos(filtrarProductosActuales());
       }).catch(error => console.error('Error:', error));
+}
+
+function filtrarProductosActuales() {
+    const nombreBuscado = document.getElementById("productoNombre")?.value.toLowerCase() || "";
+    const proveedorBuscado = document.getElementById("proveedorNombre")?.value.toLowerCase() || "";
+
+    return productosCache.filter(producto => {
+        const nombre = (producto.nombre || "").toLowerCase();
+        const proveedor = (producto.proveedorNombre || "").toLowerCase();
+
+        return nombre.includes(nombreBuscado) && proveedor.includes(proveedorBuscado);
+    });
 }
 
 function mostrarProductos(productos) {
@@ -130,7 +130,13 @@ function mostrarProductos(productos) {
 
     totalCount.textContent = productos.length;
 
-    productos.forEach(producto => {
+    const totalPaginas = Math.max(1, Math.ceil(productos.length / ELEMENTOS_POR_PAGINA));
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+    const inicio = (paginaActual - 1) * ELEMENTOS_POR_PAGINA;
+    const productosPagina = productos.slice(inicio, inicio + ELEMENTOS_POR_PAGINA);
+
+    productosPagina.forEach(producto => {
         const fila = document.createElement('div');
         fila.className = 'fila';
 
@@ -152,6 +158,46 @@ function mostrarProductos(productos) {
 
         listaProductos.appendChild(fila);
     });
+
+  renderizarPaginacionProductos(productos.length, totalPaginas);
+}
+
+function renderizarPaginacionProductos(totalItems, totalPaginas) {
+  const contenedor = document.getElementById("paginacion-productos");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = "";
+
+  if (totalItems <= ELEMENTOS_POR_PAGINA) return;
+
+  const prev = document.createElement("button");
+  prev.textContent = "Anterior";
+  prev.disabled = paginaActual === 1;
+  prev.addEventListener("click", () => {
+    paginaActual--;
+    mostrarProductos(filtrarProductosActuales());
+  });
+  contenedor.appendChild(prev);
+
+  for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    if (i === paginaActual) btn.classList.add("activo");
+    btn.addEventListener("click", () => {
+      paginaActual = i;
+      mostrarProductos(filtrarProductosActuales());
+    });
+    contenedor.appendChild(btn);
+  }
+
+  const next = document.createElement("button");
+  next.textContent = "Siguiente";
+  next.disabled = paginaActual === totalPaginas;
+  next.addEventListener("click", () => {
+    paginaActual++;
+    mostrarProductos(filtrarProductosActuales());
+  });
+  contenedor.appendChild(next);
 }
 
 function buscarProductos() {

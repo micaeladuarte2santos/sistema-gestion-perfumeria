@@ -10,6 +10,8 @@
 
     });
 
+    const ELEMENTOS_POR_PAGINA = 5;
+    let paginaActual = 1;
     let categoriasCache = [];
 
 
@@ -23,7 +25,7 @@
 
     categoriasCache = await res.json();
 
-    renderCategorias(categoriasCache);
+    filtrarCategorias();
 
     }catch(err){
 
@@ -50,7 +52,13 @@
     lista.innerHTML="";
     lista.appendChild(encabezado);
 
-    categorias.forEach(c=>{
+    const totalPaginas = Math.max(1, Math.ceil(categorias.length / ELEMENTOS_POR_PAGINA));
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+    const inicio = (paginaActual - 1) * ELEMENTOS_POR_PAGINA;
+    const pagina = categorias.slice(inicio, inicio + ELEMENTOS_POR_PAGINA);
+
+    pagina.forEach(c=>{
 
     const fila = document.createElement("div");
     fila.className="fila";
@@ -69,11 +77,68 @@
     });
 
     total.textContent = categorias.length;
+    renderizarPaginacionCategorias(categorias.length, totalPaginas);
 
     }
 
 
     function filtrarCategorias(){
+
+    const nombre = document.getElementById("categoriaNombre").value.toLowerCase();
+
+    const filtradas = categoriasCache.filter(c =>
+    c.nombre.toLowerCase().includes(nombre)
+    );
+
+    paginaActual = 1;
+
+    renderCategorias(filtradas);
+
+    }
+
+
+    function renderizarPaginacionCategorias(totalItems, totalPaginas) {
+
+    const contenedor = document.getElementById("paginacion-categorias");
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "";
+
+    if (totalItems <= ELEMENTOS_POR_PAGINA) return;
+
+    const prev = document.createElement("button");
+    prev.textContent = "Anterior";
+    prev.disabled = paginaActual === 1;
+    prev.addEventListener("click", () => {
+        paginaActual--;
+        filtrarCategoriasSinReset();
+    });
+    contenedor.appendChild(prev);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        if (i === paginaActual) btn.classList.add("activo");
+        btn.addEventListener("click", () => {
+            paginaActual = i;
+            filtrarCategoriasSinReset();
+        });
+        contenedor.appendChild(btn);
+    }
+
+    const next = document.createElement("button");
+    next.textContent = "Siguiente";
+    next.disabled = paginaActual === totalPaginas;
+    next.addEventListener("click", () => {
+        paginaActual++;
+        filtrarCategoriasSinReset();
+    });
+    contenedor.appendChild(next);
+
+    }
+
+
+    function filtrarCategoriasSinReset() {
 
     const nombre = document.getElementById("categoriaNombre").value.toLowerCase();
 

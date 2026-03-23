@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let ventasGlobal = [];
+const ELEMENTOS_POR_PAGINA = 5;
+let paginaActual = 1;
 
 
 function cargarVentas() {
@@ -37,39 +39,40 @@ function cargarVentas() {
     .then(data => {
       ventasGlobal = data;
 
-      mostrarVentas(data);
+      paginaActual = 1;
+      aplicarFiltros();
       actualizarResumenVentas(data); // 🔥 AGREGAR ESTA LÍNEA
     })
     .catch(err => console.error("Error:", err));
 }
 
-function renderizarPaginacion(data) {
-  const contenedor = document.getElementById("paginacion");
+function renderizarPaginacion(totalItems, totalPaginas) {
+  const contenedor = document.getElementById("paginacion-ventas");
+  if (!contenedor) return;
+
   contenedor.innerHTML = "";
 
   // botón anterior
   const prev = document.createElement("button");
-  prev.textContent = "←";
-  prev.disabled = data.first;
+  prev.textContent = "Anterior";
+  prev.disabled = paginaActual === 1;
   prev.onclick = () => {
     paginaActual--;
-    cargarVentas();
+    aplicarFiltrosSinReset();
   };
 
   contenedor.appendChild(prev);
 
   // páginas
-  for (let i = 0; i < data.totalPages; i++) {
+  for (let i = 1; i <= totalPaginas; i++) {
     const btn = document.createElement("button");
-    btn.textContent = i + 1;
+    btn.textContent = i;
 
-    if (i === data.number) {
-      btn.style.fontWeight = "bold";
-    }
+    if (i === paginaActual) btn.classList.add("activo");
 
     btn.onclick = () => {
       paginaActual = i;
-      cargarVentas();
+      aplicarFiltrosSinReset();
     };
 
     contenedor.appendChild(btn);
@@ -77,11 +80,11 @@ function renderizarPaginacion(data) {
 
   // botón siguiente
   const next = document.createElement("button");
-  next.textContent = "→";
-  next.disabled = data.last;
+  next.textContent = "Siguiente";
+  next.disabled = paginaActual === totalPaginas;
   next.onclick = () => {
     paginaActual++;
-    cargarVentas();
+    aplicarFiltrosSinReset();
   };
 
   contenedor.appendChild(next);
@@ -141,12 +144,19 @@ function mostrarVentas(ventas) {
 
   if (!ventas || ventas.length === 0) {
     total.textContent = "0";
+    renderizarPaginacion(0, 1);
     return;
   }
 
   total.textContent = ventas.length;
 
-  ventas.forEach((v) => {
+  const totalPaginas = Math.max(1, Math.ceil(ventas.length / ELEMENTOS_POR_PAGINA));
+  if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+  const inicio = (paginaActual - 1) * ELEMENTOS_POR_PAGINA;
+  const ventasPagina = ventas.slice(inicio, inicio + ELEMENTOS_POR_PAGINA);
+
+  ventasPagina.forEach((v) => {
     const fila = document.createElement("div");
     fila.className = "fila";
 
@@ -163,9 +173,16 @@ function mostrarVentas(ventas) {
 
     lista.appendChild(fila);
   });
+
+  renderizarPaginacion(ventas.length, totalPaginas);
 }
 
 function aplicarFiltros() {
+  paginaActual = 1;
+  aplicarFiltrosSinReset();
+}
+
+function aplicarFiltrosSinReset() {
   const cliente = document.getElementById("clienteNombre").value.toLowerCase();
   const estado = document.getElementById("estadoVenta").value.toLowerCase();
   const metodo = document

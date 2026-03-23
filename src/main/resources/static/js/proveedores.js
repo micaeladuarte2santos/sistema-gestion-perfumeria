@@ -19,9 +19,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const ELEMENTOS_POR_PAGINA = 5;
+let paginaActual = 1;
 let proveedoresCache = [];
 
 function filtrarProveedores(){
+
+    const nombre = document.getElementById("proveedorNombre").value.toLowerCase();
+    const email = document.getElementById("proveedorEmail").value.toLowerCase();
+    const telefono = document.getElementById("proveedorTelefono").value.toLowerCase();
+
+    const filtrados = proveedoresCache.filter(p => {
+
+        return (
+            p.nombre.toLowerCase().includes(nombre) &&
+            (p.email || "").toLowerCase().includes(email) &&
+            (p.telefono || "").toLowerCase().includes(telefono)
+        );
+
+    });
+
+    paginaActual = 1;
+
+    renderProveedores(filtrados);
+}
+
+
+function filtrarProveedoresSinReset() {
 
     const nombre = document.getElementById("proveedorNombre").value.toLowerCase();
     const email = document.getElementById("proveedorEmail").value.toLowerCase();
@@ -190,7 +214,13 @@ const encabezado = lista.querySelector(".encabezado");
 lista.innerHTML = "";
 lista.appendChild(encabezado);
 
-proveedores.forEach(p => {
+const totalPaginas = Math.max(1, Math.ceil(proveedores.length / ELEMENTOS_POR_PAGINA));
+if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+const inicio = (paginaActual - 1) * ELEMENTOS_POR_PAGINA;
+const pagina = proveedores.slice(inicio, inicio + ELEMENTOS_POR_PAGINA);
+
+pagina.forEach(p => {
 
 const fila = document.createElement("div");
 fila.className = "fila";
@@ -210,6 +240,45 @@ lista.appendChild(fila);
 });
 
 if(total) total.textContent = proveedores.length;
+renderizarPaginacionProveedores(proveedores.length, totalPaginas);
+}
+
+
+function renderizarPaginacionProveedores(totalItems, totalPaginas) {
+
+const contenedor = document.getElementById("paginacion-proveedores");
+if (!contenedor) return;
+
+contenedor.innerHTML = "";
+
+const prev = document.createElement("button");
+prev.textContent = "Anterior";
+prev.disabled = paginaActual === 1;
+prev.addEventListener("click", () => {
+    paginaActual--;
+    filtrarProveedoresSinReset();
+});
+contenedor.appendChild(prev);
+
+for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    if (i === paginaActual) btn.classList.add("activo");
+    btn.addEventListener("click", () => {
+        paginaActual = i;
+        filtrarProveedoresSinReset();
+    });
+    contenedor.appendChild(btn);
+}
+
+const next = document.createElement("button");
+next.textContent = "Siguiente";
+next.disabled = paginaActual === totalPaginas;
+next.addEventListener("click", () => {
+    paginaActual++;
+    filtrarProveedoresSinReset();
+});
+contenedor.appendChild(next);
 }
 
 async function cargarProveedores() {
@@ -222,7 +291,7 @@ async function cargarProveedores() {
 
         proveedoresCache = await res.json();
 
-        renderProveedores(proveedoresCache);
+        filtrarProveedores();
 
     } catch (err) {
 
