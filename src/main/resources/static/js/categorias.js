@@ -14,6 +14,24 @@
     let paginaActual = 1;
     let categoriasCache = [];
 
+    async function obtenerMensajeError(res, mensajePorDefecto) {
+        try {
+            const text = await res.text();
+            if (!text) return mensajePorDefecto;
+
+            try {
+                const data = JSON.parse(text);
+                if (data?.mensaje) return data.mensaje;
+            } catch (_) {
+                // Si no es JSON, devolvemos el texto crudo
+            }
+
+            return text;
+        } catch (_) {
+            return mensajePorDefecto;
+        }
+    }
+
 
     async function cargarCategorias(){
 
@@ -237,8 +255,8 @@ async function abrirAbmCategoria(id = null) {
             });
 
             if (!res.ok) {
-                const text = await res.text();
-                throw new Error(text || "Error al guardar categoría");
+                const mensaje = await obtenerMensajeError(res, "Error al guardar categoría");
+                throw new Error(mensaje);
             }
 
             close();

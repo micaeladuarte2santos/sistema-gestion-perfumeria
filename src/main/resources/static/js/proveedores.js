@@ -23,6 +23,10 @@ const ELEMENTOS_POR_PAGINA = 5;
 let paginaActual = 1;
 let proveedoresCache = [];
 
+function limpiarTelefono(telefono = "") {
+    return telefono.replace(/\D/g, "");
+}
+
 async function obtenerMensajeError(res, mensajePorDefecto) {
     try {
         const text = await res.text();
@@ -109,6 +113,7 @@ async function abrirAbmProveedor(id = null) {
 
     const panel = overlay.querySelector('.abm-panel');
     const form = overlay.querySelector("#proveedorForm");
+    const telefonoInput = overlay.querySelector("#telefonoProveedor");
     const btnCerrar = overlay.querySelector("#btnCerrarProveedor");
     const btnCancelar = overlay.querySelector("#btnCancelarProveedor");
 
@@ -122,6 +127,10 @@ async function abrirAbmProveedor(id = null) {
     };
 
     document.addEventListener("keydown", onKeyDown);
+
+    telefonoInput?.addEventListener("input", () => {
+        telefonoInput.value = limpiarTelefono(telefonoInput.value);
+    });
 
     btnCerrar?.addEventListener("click", close);
     btnCancelar?.addEventListener("click", close);
@@ -175,7 +184,7 @@ async function abrirAbmProveedor(id = null) {
         const proveedor = {
             nombre: data.nombre,
             email: data.email,
-            telefono: data.telefono
+            telefono: limpiarTelefono(data.telefono || "")
         };
 
         const url = id
