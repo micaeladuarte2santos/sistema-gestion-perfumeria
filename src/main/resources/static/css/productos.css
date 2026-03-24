@@ -298,6 +298,14 @@ body {
   background: #c0392b;
 }
 
+.venta-solo-lectura input:disabled,
+.venta-solo-lectura select:disabled,
+.fila-producto-bloqueada input:disabled,
+.fila-producto-bloqueada button:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
 @media (max-width:720px) {
   #detalleProductos {
     overflow-x: auto;

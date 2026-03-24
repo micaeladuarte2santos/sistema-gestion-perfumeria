@@ -334,6 +334,37 @@ function crearFilaProducto(contenedor, totalInput, detalle = null) {
   actualizarFila(false);
 }
 
+function bloquearEdicionVentaAbonada(overlay, form) {
+  overlay.querySelector("#abmTitle").textContent = "Venta Abonada";
+
+  const btnAgregarProducto = overlay.querySelector("#btnAgregarProducto");
+  const btnGuardar = form.querySelector('button[type="submit"]');
+
+  if (btnAgregarProducto) {
+    btnAgregarProducto.disabled = true;
+    btnAgregarProducto.style.display = "none";
+  }
+
+  if (btnGuardar) {
+    btnGuardar.disabled = true;
+    btnGuardar.style.display = "none";
+  }
+
+  form.querySelectorAll("input, select, button").forEach((elemento) => {
+    if (["btnCancelar", "btnCerrar"].includes(elemento.id)) {
+      return;
+    }
+
+    elemento.disabled = true;
+  });
+
+  overlay.querySelectorAll(".fila-producto").forEach((fila) => {
+    fila.classList.add("fila-producto-bloqueada");
+  });
+
+  form.classList.add("venta-solo-lectura");
+}
+
   async function abrirAbmVenta(id = null) {
     await cargarProductos();
 
@@ -392,6 +423,10 @@ function crearFilaProducto(contenedor, totalInput, detalle = null) {
         totalInput.value = venta.total || 0;
         console.log("HTML generado:", overlay.innerHTML);
         inicializarDetalleProductos(contenedor, totalInput, venta.detalles || []);
+
+        if (venta.estado === "ABONADA") {
+          bloquearEdicionVentaAbonada(overlay, form);
+        }
       } catch (error) {
         console.error("Error cargando venta:", error);
         Swal.fire("Error al cargar la venta", "", "error");
