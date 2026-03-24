@@ -86,22 +86,37 @@ public class VentaMapper {
         TicketVentaResponseDTO ticket = toTicketResponse(venta);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("******** PERFUMERIA ********\n");
+        sb.append("PPS S.A CUIL: 30-71234567-9\n");
         sb.append("Ticket N°: ").append(ticket.getVentaId()).append("\n");
         sb.append("Fecha: ").append(ticket.getFecha() != null ? ticket.getFecha().format(TICKET_DATE_FORMATTER) : "-").append("\n");
         sb.append("Cliente: ").append(ticket.getNombreCliente() != null ? ticket.getNombreCliente() : "Consumidor final").append("\n");
         sb.append("Metodo pago: ").append(ticket.getMetodoPago() != null ? ticket.getMetodoPago().name() : "-").append("\n");
         sb.append("--------------------------------\n");
 
-        for (TicketDetalleResponseDTO detalle : ticket.getDetalles()) {
-            sb.append(detalle.getProducto()).append("\n");
-            sb.append(String.format("%d x %.2f = %.2f", detalle.getCantidad(), detalle.getPrecioUnitario(), detalle.getSubtotal())).append("\n");
-        }
+        sb.append(String.format("%-15s %-5s %-8s %-8s\n", 
+    "Producto", "Cant", "Precio", "Total"));
 
         sb.append("--------------------------------\n");
-        sb.append(String.format("TOTAL: %.2f", ticket.getTotal())).append("\n");
-        sb.append("********************************\n");
 
-        return sb.toString();
+        for (TicketDetalleResponseDTO detalle : ticket.getDetalles()) {
+
+            String nombre = detalle.getProducto();
+
+            // 🔥 evita que rompa el formato si es largo
+            if (nombre.length() > 15) {
+                nombre = nombre.substring(0, 15);
+            }
+
+            sb.append(String.format("%-15s %-5d %-8.2f %-8.2f\n",
+                    nombre,
+                    detalle.getCantidad(),
+                    detalle.getPrecioUnitario(),
+                    detalle.getSubtotal()
+            ));
     }
+           
+            sb.append(String.format("TOTAL: %.2f", ticket.getTotal())).append("\n");
+
+            return sb.toString();
+        }
 }

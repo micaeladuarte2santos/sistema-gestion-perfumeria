@@ -215,7 +215,6 @@ async function cargarProductos() {
     // 📦 Crear overlay
     const tpl = document.getElementById("abmVentas");
     const overlay = document.createElement("div");
-    
 
     overlay.id = "abmOverlay";
     overlay.appendChild(tpl.content.cloneNode(true));
@@ -228,6 +227,8 @@ async function cargarProductos() {
 
     const selectMetodo = overlay.querySelector('[name="metodoPago"]');
     const selectEstado = overlay.querySelector('[name="estado"]');
+
+    
 
     await cargarMetodosPago(selectMetodo);
     await cargarEstados(selectEstado);
@@ -267,12 +268,30 @@ async function cargarProductos() {
 
         const btnImprimir = overlay.querySelector("#btnImprimir");
         console.log("BTN:", btnImprimir);
+        console.log("HTML generado:", overlay.innerHTML);
        
         if (venta.estado === "ABONADA") {
           btnImprimir.classList.remove("hidden"); 
-          btnImprimir.onclick = () => {
+          btnImprimir.onclick = async () => {
+          try {
+            const res = await fetch(`http://localhost:8080/ventas/${id}/ticket`);
+            const ticket = await res.text();
+
+            const printArea = document.getElementById("printArea");
+
+            printArea.innerHTML = `<pre >${ticket}</pre>`;
+            printArea.style.display = "block";
+
             window.print();
-          };
+            console.log("TICKET:", ticket);
+
+            printArea.style.display = "none";
+
+          } catch (error) {
+            console.error("Error imprimiendo ticket:", error);
+            Swal.fire("Error al imprimir ticket", "", "error");
+          }
+        };
         }else {
           btnImprimir.classList.add("hidden");
         }

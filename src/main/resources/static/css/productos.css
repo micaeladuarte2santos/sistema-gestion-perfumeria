@@ -496,7 +496,7 @@ input, select {
 }
 
 .btn-file {
-  background-color: #f5f5f7;
+  background-color: #00000b;
   color: #333;
   padding: 8px 16px;
   border-radius: 20px;
@@ -512,7 +512,7 @@ input, select {
 }
 
 .btn-imprimir {
-  background-color: #e0e0e0;
+  background-color: #5f6bdc;
   border: none;
   border-radius: 20px;
   padding: 6px 12px;
@@ -535,4 +535,25 @@ input, select {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+@media print {
+
+  body * {
+    visibility: hidden;   /* 🔥 en vez de display:none */
+  }
+
+  #printArea, #printArea * {
+    visibility: visible;
+    color: black !important;
+  }
+
+  #printArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-family: monospace;
+    white-space: pre-wrap;
+  }
 }

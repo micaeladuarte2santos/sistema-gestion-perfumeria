@@ -88,9 +88,13 @@
 <template id="abmVentas">
     <div class="abm-overlay">
         <div class="abm-panel">
-
+            
             <div class="abm-header">
                 <h2 id="abmTitle">Nueva Venta</h2>
+                <button id="btnImprimir" class="btn-imprimir hidden">
+                Imprimir Ticket
+                </button>
+
                 <button class="close" id="btnCerrar">×</button>
             </div>
 
@@ -105,7 +109,6 @@
                     <div class="row-header">
                         <label>Productos</label>
 
-                        <!-- 🔥 BOTÓN LINDO -->
                         <button type="button" id="btnAgregarProducto" class="btn-secondary">
                             + Agregar
                         </button>
@@ -154,6 +157,9 @@
     </div>
 </template>
 
+
+<!-- Espacio para imprimir ticket-->
+<div id="printArea" style="display: none;"></div>
 
 
 <script src="js/ventas.js"></script>

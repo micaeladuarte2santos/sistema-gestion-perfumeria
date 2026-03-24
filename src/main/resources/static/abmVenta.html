@@ -1,45 +1,47 @@
 <template id="abmVentas">
-<div class="abm-overlay">
-  <div class="abm-panel">
+  <div class="abm-overlay">
+    <div class="abm-panel">
 
-    <div class="abm-header">
-      <h2 id="abmTitle">Nueva Venta</h2>
+      <div class="abm-header">
+        <h2 id="abmTitle">Nueva Venta</h2>
 
-      <button id="btnImprimir" class="btn-imprimir hidden">Imprimir Ticket</button>
+        <button id="btnImprimir" class="btn-imprimir hidden">
+          Imprimir Ticket
+        </button>
 
-      <button class="close" id="btnCerrar">×</button>
-      
-    </div>
+        <button class="close" id="btnCerrar">×</button>
 
-    <form id="ventaForm" class="abm-form">
-
-      <div class="row">
-        <label>Cliente</label>
-        <input type="text" name="nombreCliente" required>
       </div>
 
-      <div class="split">
-        <div class="col row">
-          <label>Método de Pago</label>
-          <select name="metodoPago" required>
-            <option value="">--Seleccione--</option>
-            <option value="EFECTIVO">Efectivo</option>
-            <option value="TARJETA">Tarjeta</option>
-          </select>
+      <form id="ventaForm" class="abm-form">
+
+        <div class="row">
+          <label>Cliente</label>
+          <input type="text" name="nombreCliente" required>
         </div>
 
-      <div class="col row" id="estadoContainer">
-        <label>Estado</label>
-        <select name="estado"></select>
-      </div>
+        <div class="split">
+          <div class="col row">
+            <label>Método de Pago</label>
+            <select name="metodoPago" required>
+              <option value="">--Seleccione--</option>
+              <option value="EFECTIVO">Efectivo</option>
+              <option value="TARJETA">Tarjeta</option>
+            </select>
+          </div>
 
-      <div class="actions">
-        <button type="button" id="btnCancelar">Cancelar</button>
-        <button type="submit">Guardar</button>
-      </div>
+          <div class="col row" id="estadoContainer">
+            <label>Estado</label>
+            <select name="estado"></select>
+          </div>
 
-    </form>
+          <div class="actions">
+            <button type="button" id="btnCancelar">Cancelar</button>
+            <button type="submit">Guardar</button>
+          </div>
+        </div>
+      </form>
 
+    </div>
   </div>
-</div>
 </template>
