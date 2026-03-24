@@ -247,16 +247,65 @@ body {
 
 .fila-producto {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1.6fr 2fr 0.9fr 1fr 1fr auto;
     gap: 10px;
     align-items: center;
     margin-top: 5px;
 }
 
+#detalleProductos {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #dfe4f2;
+  border-radius: 10px;
+  background: #fcfdff;
+}
+
+.fila-producto input {
+  padding: 8px 10px;
+  border: 1px solid #d0d5e9;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
 .fila-producto.encabezado {
-    font-weight: bold;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
+  margin-top: 0;
+  padding: 10px 12px;
+  border: 1px solid #dfe4f2;
+  border-radius: 8px;
+  background: #f3f6fc;
+  font-weight: 700;
+  color: #36415c;
+}
+
+.fila-producto.encabezado span {
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+}
+
+.fila-producto button.eliminar {
+  height: 38px;
+  border: none;
+  border-radius: 8px;
+  background: #e74c3c;
+  color: #fff;
+  cursor: pointer;
+}
+
+.fila-producto button.eliminar:hover {
+  background: #c0392b;
+}
+
+@media (max-width:720px) {
+  #detalleProductos {
+    overflow-x: auto;
+  }
+
+  .fila-producto {
+    min-width: 760px;
+  }
 }
 
 /* CONTENEDOR SCROLL */
@@ -267,7 +316,7 @@ body {
 
 /* TABLA */
 .lista {
-    min-width: 900px; /* 👈 evita que se rompa */
+  min-width: 1080px;
 }
 
 /* FILAS */
@@ -279,7 +328,8 @@ body {
         1fr    /* total */
         1.5fr  /* metodo pago */
         1fr    /* estado */
-        1fr;   /* acciones */
+    1.2fr  /* ticket */
+    0.9fr; /* acciones */
     gap: 10px;
     align-items: center;
     padding: 8px;
@@ -294,11 +344,32 @@ body {
 }
 
 
-.fila span:last-child {
+.fila .celda-ticket,
+.fila .celda-acciones {
     display: flex;
-    justify-content: flex-end;
+  justify-content: center;
     align-items: center;
-    gap: 5px;
+  gap: 8px;
+}
+
+.btn-ticket {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: #2c7a7b;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-ticket:hover {
+  background: #236466;
+}
+
+.ticket-vacio {
+  color: #7c879f;
+  font-weight: 600;
 }
 
 .encabezado {
@@ -343,6 +414,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+  padding: 0 4px;
+  flex-wrap: wrap;
 }
 
 .abm-panel {
@@ -350,13 +425,19 @@ body {
     padding: 20px;
     border-radius: 12px;
 
-    width: 90%;
-    max-width: 1000px; /* 🔥 más grande como antes */
+  width: min(96vw, 1180px);
+  max-width: 1180px;
     
     max-height: 90vh; /* 🔥 evita que se desborde */
     overflow-y: auto; /* 🔥 scroll interno */
 
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.row-header .btn-secondary {
+  margin-left: auto;
+  padding-inline: 14px;
+  flex-shrink: 0;
 }
 
 .abm-header {

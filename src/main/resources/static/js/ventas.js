@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
       abrirAbmVenta(e.target.dataset.id);
     }
 
+    if (e.target.classList.contains("btn-ticket")) {
+      imprimirTicket(e.target.dataset.id);
+    }
+
     if (e.target.classList.contains("btn-eliminar")) {
       eliminarVenta(e.target.dataset.id);
     }
@@ -34,7 +38,7 @@ let paginaActual = 1;
 
 
 function cargarVentas() {
-  fetch("http://localhost:8080/ventas")
+  return fetch("http://localhost:8080/ventas")
     .then(res => res.json())
     .then(data => {
       ventasGlobal = data;
@@ -138,6 +142,7 @@ function mostrarVentas(ventas) {
             <span>TOTAL</span>
             <span>MÉTODO DE PAGO</span>
             <span>ESTADO</span>
+        <span>TICKET</span>
             <span>ACCIONES</span>
         </div>
     `;
@@ -160,13 +165,21 @@ function mostrarVentas(ventas) {
     const fila = document.createElement("div");
     fila.className = "fila";
 
+    const botonTicket =
+      v.estado === "PENDIENTE"
+        ? `<button class="btn-ticket" data-id="${v.id}" data-estado="${v.estado}">Imprimir</button>`
+        : `<span class="ticket-vacio">-</span>`;
+
     fila.innerHTML = `
             <span>${v.nombreCliente}</span>
             <span>${new Date(v.fecha).toLocaleString()}</span>
             <span>$ ${v.total?.toFixed(2)}</span>
             <span>${v.metodoPago}</span>
             <span>${v.estado}</span>
-            <span>
+            <span class="celda-ticket">
+                ${botonTicket}
+            </span>
+            <span class="celda-acciones">
                 <button class="btn-editar" data-id="${v.id}">✏️</button>
             </span>
         `;
@@ -209,6 +222,118 @@ async function cargarProductos() {
   productos = await res.json();
 }
 
+function buscarProductoPorCodigo(codigoBarras) {
+  if (!codigoBarras) return null;
+
+  const codigoNormalizado = codigoBarras.toString().trim().toLowerCase();
+
+  return (
+    productos.find(
+      (p) =>
+        p.codigoBarras &&
+        p.codigoBarras.toString().trim().toLowerCase() === codigoNormalizado
+    ) || null
+  );
+}
+
+function renderizarEncabezadoDetalle(contenedor) {
+  contenedor.innerHTML = `
+        <div class="fila-producto encabezado">
+            <span>Código de barras</span>
+            <span>Producto</span>
+            <span>Cantidad</span>
+            <span>Precio</span>
+            <span>Subtotal</span>
+            <span></span>
+        </div>
+    `;
+}
+
+function inicializarDetalleProductos(contenedor, totalInput, detalles = []) {
+  renderizarEncabezadoDetalle(contenedor);
+
+  if (detalles.length > 0) {
+    detalles.forEach((det) => crearFilaProducto(contenedor, totalInput, det));
+  } else {
+    crearFilaProducto(contenedor, totalInput);
+  }
+
+  const primerCodigo = contenedor.querySelector(".codigo-barras");
+  if (primerCodigo) {
+    primerCodigo.focus();
+  }
+}
+
+function crearFilaProducto(contenedor, totalInput, detalle = null) {
+  const div = document.createElement("div");
+  div.className = "fila-producto";
+
+  const productoDetalle = detalle?.producto || null;
+  const productoId = productoDetalle?.id || detalle?.productoId || "";
+  const codigoBarras = productoDetalle?.codigoBarras || "";
+  const nombreProducto = productoDetalle?.nombre || "";
+  const cantidadInicial = detalle?.cantidad || 1;
+  const precioInicial = productoDetalle?.precio || 0;
+  const subtotalInicial = precioInicial * cantidadInicial;
+
+  div.innerHTML = `
+        <input type="text" class="codigo-barras" placeholder="Código de barras" value="${codigoBarras}">
+        <input type="hidden" class="producto-id" value="${productoId}">
+      <input type="text" class="nombre-producto" placeholder="Nombre del producto" value="${nombreProducto}" readonly>
+        <input type="number" class="cantidad" min="1" value="${cantidadInicial}">
+        <input type="number" class="precio" readonly value="${precioInicial}">
+        <input type="number" class="subtotal" readonly value="${subtotalInicial}">
+        <button type="button" class="eliminar">X</button>
+    `;
+
+  contenedor.appendChild(div);
+
+  const codigoInput = div.querySelector(".codigo-barras");
+  const productoIdInput = div.querySelector(".producto-id");
+  const nombreInput = div.querySelector(".nombre-producto");
+  const cantidadInput = div.querySelector(".cantidad");
+  const precioInput = div.querySelector(".precio");
+  const subtotalInput = div.querySelector(".subtotal");
+
+  function actualizarFila(mostrarError = false) {
+    const producto = buscarProductoPorCodigo(codigoInput.value);
+
+    if (!producto) {
+      productoIdInput.value = "";
+      nombreInput.value = "";
+      precioInput.value = 0;
+      subtotalInput.value = 0;
+      recalcularTotal(contenedor, totalInput);
+
+      if (mostrarError && codigoInput.value.trim()) {
+        Swal.fire("No se encontró producto para ese código", "", "warning");
+      }
+
+      return;
+    }
+
+    productoIdInput.value = producto.id;
+    nombreInput.value = producto.nombre;
+    precioInput.value = producto.precio;
+    subtotalInput.value = producto.precio * (parseInt(cantidadInput.value, 10) || 0);
+
+    codigoInput.title = producto.nombre;
+
+    recalcularTotal(contenedor, totalInput);
+  }
+
+  codigoInput.addEventListener("change", () => actualizarFila(true));
+  codigoInput.addEventListener("blur", () => actualizarFila(true));
+  cantidadInput.addEventListener("input", () => actualizarFila(false));
+
+  div.querySelector(".eliminar").onclick = () => {
+    div.remove();
+    recalcularTotal(contenedor, totalInput);
+  };
+
+  actualizarFila(false);
+}
+
   async function abrirAbmVenta(id = null) {
     await cargarProductos();
 
@@ -239,6 +364,8 @@ async function cargarProductos() {
       estadoContainer.style.display = "block";
     }
 
+    inicializarDetalleProductos(contenedor, totalInput);
+
     const close = () => overlay.remove();
 
     overlay.querySelector("#btnCerrar").onclick = close;
@@ -263,98 +390,8 @@ async function cargarProductos() {
         form.metodoPago.value = venta.metodoPago || "";
         form.estado.value = venta.estado || "";
         totalInput.value = venta.total || 0;
-
-        contenedor.innerHTML = "";
-
-        const btnImprimir = overlay.querySelector("#btnImprimir");
-        console.log("BTN:", btnImprimir);
         console.log("HTML generado:", overlay.innerHTML);
-       
-        if (venta.estado === "ABONADA") {
-          btnImprimir.classList.remove("hidden"); 
-          btnImprimir.onclick = async () => {
-          try {
-            const res = await fetch(`http://localhost:8080/ventas/${id}/ticket`);
-            const ticket = await res.text();
-
-            const printArea = document.getElementById("printArea");
-
-            printArea.innerHTML = `<pre >${ticket}</pre>`;
-            printArea.style.display = "block";
-
-            window.print();
-            console.log("TICKET:", ticket);
-
-            printArea.style.display = "none";
-
-          } catch (error) {
-            console.error("Error imprimiendo ticket:", error);
-            Swal.fire("Error al imprimir ticket", "", "error");
-          }
-        };
-        }else {
-          btnImprimir.classList.add("hidden");
-        }
-
-
-        (venta.detalles || []).forEach((det) => {
-          const div = document.createElement("div");
-          div.className = "fila-producto";
-
-          const productoId = det.producto?.id || det.productoId;
-
-          div.innerHTML = `
-            <select class="producto-select">
-              <option value="">--Producto--</option>
-              ${productos
-                .map(
-                  (p) => `
-                  <option value="${p.id}" 
-                    data-precio="${p.precio}"
-                    ${p.id === productoId ? "selected" : ""}>
-                    ${p.nombre}
-                  </option>
-                `
-                )
-                .join("")}
-            </select>
-
-            <input type="number" class="cantidad" value="${det.cantidad}" min="1">
-            <input type="number" class="precio" readonly>
-            <input type="number" class="subtotal" readonly>
-
-            <button type="button" class="eliminar">X</button>
-          `;
-
-          contenedor.appendChild(div);
-
-          const select = div.querySelector(".producto-select");
-          const cantidad = div.querySelector(".cantidad");
-          const precio = div.querySelector(".precio");
-          const subtotal = div.querySelector(".subtotal");
-
-          function actualizar() {
-            const selected = select.options[select.selectedIndex];
-            const p = parseFloat(selected.dataset.precio || 0);
-
-            precio.value = p;
-
-            const sub = p * (cantidad.value || 0);
-            subtotal.value = sub;
-
-            recalcularTotal(contenedor, totalInput);
-          }
-
-          select.onchange = actualizar;
-          cantidad.oninput = actualizar;
-
-          div.querySelector(".eliminar").onclick = () => {
-            div.remove();
-            recalcularTotal(contenedor, totalInput);
-          };
-
-          actualizar(); // 🔥 CLAVE
-        });
+        inicializarDetalleProductos(contenedor, totalInput, venta.detalles || []);
       } catch (error) {
         console.error("Error cargando venta:", error);
         Swal.fire("Error al cargar la venta", "", "error");
@@ -371,12 +408,12 @@ async function cargarProductos() {
       const detalles = [];
 
       contenedor.querySelectorAll(".fila-producto").forEach((fila) => {
-        const select = fila.querySelector(".producto-select");
+        const productoIdInput = fila.querySelector(".producto-id");
         const cantidadInput = fila.querySelector(".cantidad");
 
-        if (!select || !cantidadInput) return;
+        if (!productoIdInput || !cantidadInput) return;
 
-        const productoId = select.value;
+        const productoId = productoIdInput.value;
         const cantidad = cantidadInput.value;
 
         if (productoId && cantidad > 0) {
@@ -463,48 +500,7 @@ function actualizarResumenVentas(ventas) {
 }
 
 function agregarFilaProducto(contenedor, totalInput) {
-  const div = document.createElement("div");
-  div.className = "fila-producto";
-
-  div.innerHTML = `
-        <select class="producto-select">
-            <option value="">--Producto--</option>
-            ${productos.map((p) => `<option value="${p.id}" data-precio="${p.precio}">${p.nombre}</option>`).join("")}
-        </select>
-
-        <input type="number" class="cantidad" min="1" value="1">
-        <input type="number" class="precio" readonly>
-        <input type="number" class="subtotal" readonly>
-
-        <button type="button" class="eliminar">X</button>
-    `;
-
-  contenedor.appendChild(div);
-
-  const select = div.querySelector(".producto-select");
-  const cantidad = div.querySelector(".cantidad");
-  const precio = div.querySelector(".precio");
-  const subtotal = div.querySelector(".subtotal");
-
-  function actualizar() {
-    const selected = select.options[select.selectedIndex];
-    const p = parseFloat(selected.dataset.precio || 0);
-
-    precio.value = p;
-
-    const sub = p * (cantidad.value || 0);
-    subtotal.value = sub;
-
-    recalcularTotal(contenedor, totalInput);
-  }
-
-  select.onchange = actualizar;
-  cantidad.oninput = actualizar;
-
-  div.querySelector(".eliminar").onclick = () => {
-    div.remove();
-    recalcularTotal(contenedor, totalInput);
-  };
+  crearFilaProducto(contenedor, totalInput);
 }
 
 function recalcularTotal(contenedor, totalInput) {
@@ -512,15 +508,16 @@ function recalcularTotal(contenedor, totalInput) {
 
   const subtotales = contenedor.querySelectorAll(".subtotal");
 
-  if (subtotales.length === 0) return; // 🔥 evita pisar el total
+  if (subtotales.length === 0) {
+    totalInput.value = 0;
+    return;
+  }
 
   subtotales.forEach((input) => {
     total += parseFloat(input.value) || 0;
   });
 
-  if (total > 0) {
-    totalInput.value = total;
-  }
+  totalInput.value = total;
 }
 
 async function cargarMetodosPago(select) {
@@ -547,7 +544,6 @@ async function cargarEstados(select) {
 
     const estados = await res.json();
 
-    // 🔥 validación clave
     if (!Array.isArray(estados)) {
       throw new Error("Formato inválido de estados");
     }
@@ -565,5 +561,28 @@ async function cargarEstados(select) {
   } catch (error) {
     console.error("Error cargando estados:", error);
     Swal.fire("Error al cargar estados", "", "error");
+  }
+}
+
+async function imprimirTicket(id) {
+  try {
+    const res = await fetch(`http://localhost:8080/ventas/${id}/ticket`);
+
+    if (!res.ok) {
+      throw new Error("No se pudo obtener el ticket");
+    }
+
+    const ticket = await res.text();
+    const printArea = document.getElementById("printArea");
+
+    printArea.innerHTML = `<pre>${ticket}</pre>`;
+    printArea.style.display = "block";
+
+    window.print();
+
+    printArea.style.display = "none";
+  } catch (error) {
+    console.error("Error imprimiendo ticket:", error);
+    Swal.fire("Error al imprimir ticket", "", "error");
   }
 }
