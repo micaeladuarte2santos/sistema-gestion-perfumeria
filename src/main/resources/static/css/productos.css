@@ -510,3 +510,29 @@ input, select {
 .btn-file:hover {
   background-color: #e8e8ed;
 }
+
+.btn-imprimir {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-imprimir:hover {
+  background-color: #d5d5d5;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Para posicionarlo bien en el header */
+.abm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

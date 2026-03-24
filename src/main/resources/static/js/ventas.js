@@ -215,6 +215,7 @@ async function cargarProductos() {
     // 📦 Crear overlay
     const tpl = document.getElementById("abmVentas");
     const overlay = document.createElement("div");
+    
 
     overlay.id = "abmOverlay";
     overlay.appendChild(tpl.content.cloneNode(true));
@@ -263,6 +264,19 @@ async function cargarProductos() {
         totalInput.value = venta.total || 0;
 
         contenedor.innerHTML = "";
+
+        const btnImprimir = overlay.querySelector("#btnImprimir");
+        console.log("BTN:", btnImprimir);
+       
+        if (venta.estado === "ABONADA") {
+          btnImprimir.classList.remove("hidden"); 
+          btnImprimir.onclick = () => {
+            window.print();
+          };
+        }else {
+          btnImprimir.classList.add("hidden");
+        }
+
 
         (venta.detalles || []).forEach((det) => {
           const div = document.createElement("div");
