@@ -143,4 +143,46 @@ public class UsuarioServiceImpl implements IUsuarioService {
         // Guardamos los cambios
         usuarioRepository.save(usuario);
     }
+
+    @Override
+    public void solicitarCodigoRecuperacion(String username) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNotFoundException(username));
+
+        codigoVerificacionRepository.deleteByUsername(username);
+
+        String codigo = String.format("%06d", new Random().nextInt(1_000_000));
+        CodigoVerificacion codigoVerificacion = new CodigoVerificacion();
+        codigoVerificacion.setUsername(username);
+        codigoVerificacion.setCodigo(codigo);
+        codigoVerificacion.setFechaExpiracion(LocalDateTime.now().plusMinutes(minutosExpiracion));
+        codigoVerificacion.setUsado(false);
+        codigoVerificacionRepository.save(codigoVerificacion);
+
+        emailService.enviarCodigoRecuperacion(
+            usuario.getEmail(),
+            codigo,
+            usuario.getNombre() + " " + usuario.getApellido()
+        );
+    }
+
+    @Override
+    public void actualizarPasswordConCodigo(String username, String codigo, String nuevoPassword) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNotFoundException(username));
+
+        CodigoVerificacion codigoVerificacion = codigoVerificacionRepository
+            .findByUsernameAndCodigoAndUsadoFalse(username, codigo)
+            .orElseThrow(CodigoVerificacionInvalidoException::new);
+
+        if (codigoVerificacion.estaExpirado()) {
+            throw new CodigoVerificacionExpiradoException();
+        }
+
+        usuario.setPassword(passwordEncoder.encode(nuevoPassword));
+        usuarioRepository.save(usuario);
+
+        codigoVerificacion.setUsado(true);
+        codigoVerificacionRepository.save(codigoVerificacion);
+    }
 }

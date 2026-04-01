@@ -1,6 +1,7 @@
 document.getElementById('formReset2').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const codigo = document.getElementById('codigo').value;
     const pass1 = document.getElementById('pass1').value;
     const pass2 = document.getElementById('pass2').value;
     const username = localStorage.getItem('usuarioParaReset');
@@ -17,11 +18,12 @@ document.getElementById('formReset2').addEventListener('submit', async (e) => {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/usuarios/actualizar-password', {
+        const response = await fetch('http://localhost:8080/usuarios/password-reset/confirmar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username: username,
+                codigo: codigo,
                 nuevoPassword: pass1
             })
         });
@@ -36,7 +38,8 @@ document.getElementById('formReset2').addEventListener('submit', async (e) => {
             localStorage.removeItem('usuarioParaReset');
             window.location.href = "login.html";
         } else {
-            Swal.fire('Error', 'No se pudo actualizar la contraseña.', 'error');
+            const resultado = await response.json();
+            Swal.fire('Error', resultado.mensaje || 'No se pudo actualizar la contrasena.', 'error');
         }
     } catch (error) {
         Swal.fire('Error', 'Error de conexión.', 'error');

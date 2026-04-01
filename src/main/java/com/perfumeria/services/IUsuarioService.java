@@ -9,4 +9,6 @@ public interface IUsuarioService {
     void reenviarCodigoVerificacion(String username);
     boolean verificarCredenciales(String username, String password);
     void actualizarPassword(String username, String nuevoPassword);
+    void solicitarCodigoRecuperacion(String username);
+    void actualizarPasswordConCodigo(String username, String codigo, String nuevoPassword);
 }

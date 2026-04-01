@@ -1,6 +1,8 @@
 package com.perfumeria.controller;
 
 import com.perfumeria.dto.ReenviarCodigoRequestDTO;
+import com.perfumeria.dto.ResetPasswordRequestDTO;
+import com.perfumeria.dto.SolicitarResetPasswordDTO;
 import com.perfumeria.dto.UsuarioRequestDTO;
 import com.perfumeria.dto.UsuarioResponseDTO;
 import com.perfumeria.dto.VerificacionRequestDTO;
@@ -96,6 +98,24 @@ public class UsuarioController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping("/password-reset/solicitar-codigo")
+    public ResponseEntity<Map<String, String>> solicitarCodigoReset(@RequestBody SolicitarResetPasswordDTO request) {
+        usuarioService.solicitarCodigoRecuperacion(request.getUsername());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Se envio un codigo de recuperacion a tu correo electronico.");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/password-reset/confirmar")
+    public ResponseEntity<Map<String, String>> confirmarReset(@RequestBody ResetPasswordRequestDTO request) {
+        usuarioService.actualizarPasswordConCodigo(request.getUsername(), request.getCodigo(), request.getNuevoPassword());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Contrasena actualizada exitosamente");
+        return ResponseEntity.ok(response);
     }
 
     // 2. Cambiar la clave para resetPass2
