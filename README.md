@@ -9,28 +9,30 @@ Requisitos:
 
 Pasos:
 
-1) Crear la base de datos en MySQL
+## 1. Crear la base de datos
 
 Abre tu cliente MySQL y ejecuta:
 
 ```sql
-CREATE DATABASE perfumeria 
+CREATE DATABASE perfumeria_db;
 ```
 
-2) Verificar `application.properties`
+## 2. Revisar application.properties
+
+Archivo: `src/main/resources/application.properties`
 
 Revisa `src/main/resources/application.properties` y ajusta las credenciales si es necesario. Por defecto el proyecto usa:
 
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/perfumeria?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+spring.datasource.url=jdbc:mysql://localhost:3306/perfumeria_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
 spring.datasource.username=root
 spring.datasource.password=root
 ```
 
-3) Levantar la aplicación
+## 3. Levantar/Ejecutar la aplicación
 
 
-4) Ejecutar el script de datos (INSERTs)
+## 4. Ejecutar el script de datos (INSERTs)
 
 El script con los INSERTs se llama `insert-Perfumeria.sql`.
 

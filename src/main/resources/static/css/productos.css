@@ -646,3 +646,73 @@ input, select {
     white-space: pre-wrap;
   }
 }
+
+/* Ajuste de listas para evitar que se alarguen hacia la derecha */
+.main {
+  min-width: 0;
+}
+
+.tabla-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.lista {
+  width: 100%;
+  min-width: 0;
+}
+
+#lista-productos .fila {
+  grid-template-columns: 2fr 2fr 1fr 1fr 90px;
+}
+
+#lista-proveedores .fila {
+  grid-template-columns: 2fr 2fr 1.2fr 90px;
+}
+
+#lista-categorias .fila {
+  grid-template-columns: 2fr 90px;
+}
+
+#lista-ventas {
+  min-width: 980px;
+}
+
+#lista-ventas .fila {
+  grid-template-columns: 1.4fr 1.8fr 1fr 1.2fr 1fr 0.9fr 0.9fr;
+}
+
+@media (max-width: 992px) {
+  .content {
+    padding: 18px 16px;
+  }
+
+  #lista-ventas {
+    min-width: 920px;
+  }
+}
+
+/* Acciones: iconos uno al lado del otro */
+#lista-productos .fila > span:last-child,
+#lista-proveedores .fila > span:last-child,
+#lista-categorias .fila > span:last-child,
+#lista-ventas .fila .celda-acciones {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+#lista-productos .fila > span:last-child button,
+#lista-proveedores .fila > span:last-child button,
+#lista-categorias .fila > span:last-child button,
+#lista-ventas .fila .celda-acciones button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+}
