@@ -16,20 +16,22 @@
 
     async function obtenerMensajeError(res, mensajePorDefecto) {
         try {
-            const text = await res.text();
-            if (!text) return mensajePorDefecto;
+                const text = await res.text();
+                if (!text) return mensajePorDefecto;
 
-            try {
-                const data = JSON.parse(text);
-                if (data?.mensaje) return data.mensaje;
-            } catch (_) {
-                // Si no es JSON, devolvemos el texto crudo
-            }
+                try {
+                    const data = JSON.parse(text);
+                    if (data?.mensaje) return data.mensaje;
+                } catch (_) {
+                    
+                }
 
-            return text;
-        } catch (_) {
+                return text;
+            } 
+        catch (_) {
+
             return mensajePorDefecto;
-        }
+        }  
     }
 
 
@@ -235,7 +237,7 @@ async function abrirAbmCategoria(id = null) {
         if (titulo) titulo.textContent = "Nueva Categoría";
     }
 
-    // Guardar categoría
+    
     form.addEventListener("submit", async e => {
         e.preventDefault();
 

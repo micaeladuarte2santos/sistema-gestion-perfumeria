@@ -36,7 +36,7 @@ WHERE v.id = :id
 """)
     Optional<Venta> findByIdConDetalles(@Param("id") Long id);
 
-    // 💰 RECAUDACIÓN
+    
     @Query("SELECT SUM(v.total) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = 'ABONADA'")
     Double getRecaudacionPorDia(
         @Param("inicio") LocalDateTime inicio,
@@ -49,7 +49,7 @@ WHERE v.id = :id
     @Query("SELECT SUM(v.total) FROM Venta v WHERE YEAR(v.fecha) = :anio AND v.estado = 'ABONADA'")
     Double getRecaudacionPorAnio(@Param("anio") int anio);
 
-    // 🔥 DEVOLUCIONES DIA
+   
     @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
     Long countDevolucionesDia(
         @Param("inicio") LocalDateTime inicio,
@@ -64,33 +64,33 @@ WHERE v.id = :id
         @Param("estado") EstadoVentaEnum estado
     );
 
-    // 🔥 MES
-@Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
-Long countDevolucionesMes(
-    @Param("inicio") LocalDateTime inicio,
-    @Param("fin") LocalDateTime fin,
-    @Param("estado") EstadoVentaEnum estado
-);
+        
+    @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
+    Long countDevolucionesMes(
+        @Param("inicio") LocalDateTime inicio,
+        @Param("fin") LocalDateTime fin,
+        @Param("estado") EstadoVentaEnum estado
+    );
 
-@Query("SELECT SUM(v.total) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
-Double totalDevolucionesMes(
-    @Param("inicio") LocalDateTime inicio,
-    @Param("fin") LocalDateTime fin,
-    @Param("estado") EstadoVentaEnum estado
-);
+    @Query("SELECT SUM(v.total) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
+    Double totalDevolucionesMes(
+        @Param("inicio") LocalDateTime inicio,
+        @Param("fin") LocalDateTime fin,
+        @Param("estado") EstadoVentaEnum estado
+    );
 
-// 🔥 AÑO
-@Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
-Long countDevolucionesAnio(
-    @Param("inicio") LocalDateTime inicio,
-    @Param("fin") LocalDateTime fin,
-    @Param("estado") EstadoVentaEnum estado
-);
 
-@Query("SELECT SUM(v.total) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
-Double totalDevolucionesAnio(
-    @Param("inicio") LocalDateTime inicio,
-    @Param("fin") LocalDateTime fin,
-    @Param("estado") EstadoVentaEnum estado
-);
+    @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
+    Long countDevolucionesAnio(
+        @Param("inicio") LocalDateTime inicio,
+        @Param("fin") LocalDateTime fin,
+        @Param("estado") EstadoVentaEnum estado
+    );
+
+    @Query("SELECT SUM(v.total) FROM Venta v WHERE v.fecha >= :inicio AND v.fecha < :fin AND v.estado = :estado")
+    Double totalDevolucionesAnio(
+        @Param("inicio") LocalDateTime inicio,
+        @Param("fin") LocalDateTime fin,
+        @Param("estado") EstadoVentaEnum estado
+    );
 }

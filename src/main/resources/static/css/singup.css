@@ -79,7 +79,7 @@ button:hover {
 }
 
 .login-card {
-    position: relative; /* referencia para el botón */
+    position: relative; 
 }
 
 .btn-back {

@@ -266,7 +266,7 @@ async function abrirAbmProducto(id = null) {
   btnCerrar?.addEventListener('click', close);
   btnCancelar?.addEventListener('click', close);
 
-  // poblar selects desde backend
+  
   const selCat = overlay.querySelector('#categoria');
   const selProv = overlay.querySelector('#proveedor');
 
@@ -357,7 +357,7 @@ async function abrirAbmProducto(id = null) {
 
     const formData = new FormData();
 
-    // Datos normales del formulario
+    
     const data = Object.fromEntries(new FormData(form).entries());
 
     const categoriaId = data.categoria ? Number(data.categoria) : null;
@@ -378,13 +378,13 @@ async function abrirAbmProducto(id = null) {
         proveedorId: proveedorId
     };
 
-    // Agregar JSON como texto
+   
     formData.append("producto", new Blob(
         [JSON.stringify(producto)], 
         { type: "application/json" }
     ));
 
-    // Agregar imagen si existe
+    
     const inputImagen = form.querySelector('#imagen');
     if (inputImagen && inputImagen.files.length > 0) {
         formData.append("imagen", inputImagen.files[0]);
@@ -406,7 +406,7 @@ async function abrirAbmProducto(id = null) {
 
         let mensaje = "Error al guardar el producto";
 
-        const text = await res.text(); // SIEMPRE lee el body
+        const text = await res.text(); 
 
         try {
             const json = JSON.parse(text);
@@ -453,7 +453,7 @@ async function abrirAbmProducto(id = null) {
 
 
 
-/* Util: evitar inyección simple al insertar texto en option */
+
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));

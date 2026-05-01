@@ -10,8 +10,8 @@ import com.perfumeria.dto.mapper.UsuarioMapper;
 import com.perfumeria.exception.UsuarioNotFoundException;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.services.IUsuarioService;
-import com.perfumeria.repositories.UsuarioRepository; // IMPORTANTE
-import org.springframework.security.crypto.password.PasswordEncoder; // IMPORTANTE
+import com.perfumeria.repositories.UsuarioRepository; 
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +33,10 @@ public class UsuarioController {
     private UsuarioMapper usuarioMapper;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // AGREGADO: Para solucionar el error de compilación
+    private UsuarioRepository usuarioRepository; 
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // AGREGADO: Para poder encriptar la nueva clave
+    private PasswordEncoder passwordEncoder; 
     
     @PostMapping
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody UsuarioRequestDTO request) {
@@ -91,7 +91,7 @@ public class UsuarioController {
         }
     }
 
-    // 1. Verificar existencia para resetPass1
+    
     @GetMapping("/existe/{username}")
     public ResponseEntity<?> verificarExistencia(@PathVariable String username) {
         if (usuarioRepository.existsByUsername(username)) { // Usamos tu método del repo
@@ -118,7 +118,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    // 2. Cambiar la clave para resetPass2
+    
     @PostMapping("/actualizar-password")
     public ResponseEntity<?> actualizarPassword(@RequestBody Map<String, String> datos) {
         String username = datos.get("username");
