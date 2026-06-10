@@ -6,6 +6,7 @@ import com.perfumeria.dto.VentaRequestDTO;
 import com.perfumeria.dto.VentaResponseDTO;
 import com.perfumeria.models.Venta;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
@@ -16,6 +17,12 @@ import java.util.stream.Collectors;
 public class VentaMapper {
 
     private static final DateTimeFormatter TICKET_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+    @Value("${ticket.empresa.nombre:PPS S.A.}")
+    private String ticketEmpresaNombre;
+
+    @Value("${ticket.empresa.cuil:30-71234567-9}")
+    private String ticketEmpresaCuil;
     
     @Autowired
     private DetalleVentaMapper detalleVentaMapper;
@@ -86,7 +93,7 @@ public class VentaMapper {
         TicketVentaResponseDTO ticket = toTicketResponse(venta);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("PPS S.A CUIL: 30-71234567-9\n");
+        sb.append(ticketEmpresaNombre).append(" CUIL: ").append(ticketEmpresaCuil).append("\n");
         sb.append("Ticket N°: ").append(ticket.getVentaId()).append("\n");
         sb.append("Fecha: ").append(ticket.getFecha() != null ? ticket.getFecha().format(TICKET_DATE_FORMATTER) : "-").append("\n");
         sb.append("Cliente: ").append(ticket.getNombreCliente() != null ? ticket.getNombreCliente() : "Consumidor final").append("\n");

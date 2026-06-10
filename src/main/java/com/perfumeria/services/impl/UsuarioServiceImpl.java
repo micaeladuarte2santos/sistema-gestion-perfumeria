@@ -19,13 +19,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements IUsuarioService {
+
+    private static final SecureRandom RANDOM = new SecureRandom();
     
     private final UsuarioRepository usuarioRepository;
     private final CodigoVerificacionRepository codigoVerificacionRepository;
@@ -110,7 +112,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
     
     private void generarYEnviarCodigo(Usuario usuario) {
-        String codigo = String.format("%06d", new Random().nextInt(999999));
+        String codigo = String.format("%06d", RANDOM.nextInt(1_000_000));
         
         CodigoVerificacion codigoVerificacion = new CodigoVerificacion();
         codigoVerificacion.setUsername(usuario.getUsername());
@@ -154,7 +156,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
         codigoVerificacionRepository.deleteByUsername(username);
 
-        String codigo = String.format("%06d", new Random().nextInt(1_000_000));
+        String codigo = String.format("%06d", RANDOM.nextInt(1_000_000));
         CodigoVerificacion codigoVerificacion = new CodigoVerificacion();
         codigoVerificacion.setUsername(username);
         codigoVerificacion.setCodigo(codigo);
