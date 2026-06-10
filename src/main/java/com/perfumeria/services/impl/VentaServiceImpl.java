@@ -9,9 +9,9 @@ import com.perfumeria.models.DetalleVenta;
 import com.perfumeria.models.Producto;
 import com.perfumeria.models.Venta;
 import com.perfumeria.repositories.DetalleVentaRepository;
-import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.VentaRepository;
 import com.perfumeria.services.IVentaService;
+import com.perfumeria.services.StockService;
 import com.perfumeria.models.EstadoVentaEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,15 +21,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class VentaServiceImpl implements IVentaService {
 
     private final VentaRepository ventaRepository;
-    private final ProductoRepository productoRepository;
     private final DetalleVentaRepository detalleVentaRepository;
+    private final StockService stockService;
 
     @Override
     public List<Venta> findByDia(LocalDate fecha) {
@@ -52,21 +52,10 @@ public class VentaServiceImpl implements IVentaService {
 
         Venta ventaGuardada = ventaRepository.save(venta);
 
+        Map<Long, Producto> productos = stockService.descontarStockPorDetalles(request.getDetalles());
+
         for (DetalleVentaRequestDTO dvDTO : request.getDetalles()) {
-
-            Producto producto = productoRepository.findById(dvDTO.getProductoId())
-                    .orElseThrow(() -> new ProductoNotFoundException(dvDTO.getProductoId()));
-
-            if (producto.getStock() < dvDTO.getCantidad()) {
-                throw new StockInsuficienteException(
-                        producto.getNombre(),
-                        producto.getStock(),
-                        dvDTO.getCantidad()
-                );
-            }
-
-            producto.setStock(producto.getStock() - dvDTO.getCantidad());
-            productoRepository.save(producto);
+            Producto producto = productos.get(dvDTO.getProductoId());
 
             DetalleVenta detalle = new DetalleVenta();
             detalle.setProducto(producto);
@@ -102,13 +91,7 @@ public class VentaServiceImpl implements IVentaService {
         }
 
         // 4. Restaurar stock de los productos de la venta ANTERIOR
-        for (DetalleVenta dv : venta.getDetalles()) {
-            if (dv.getProducto() != null) {
-                Producto p = dv.getProducto(); // No necesitas buscarlo de nuevo si ya viene en el detalle
-                p.setStock(p.getStock() + dv.getCantidad());
-                productoRepository.save(p);
-            }
-        }
+        stockService.restaurarStockParaDetalles(venta.getDetalles());
 
         // 5. Limpiar detalles viejos
         // IMPORTANTE: Si usas orphanRemoval = true en la entidad Venta, 
@@ -119,21 +102,10 @@ public class VentaServiceImpl implements IVentaService {
         // 6. Procesar nuevos detalles y CALCULAR TOTAL
         double acumuladorTotal = 0.0; // Cambié el nombre para mayor claridad
 
+        Map<Long, Producto> productos = stockService.descontarStockPorDetalles(request.getDetalles());
+
         for (DetalleVentaRequestDTO dvDTO : request.getDetalles()) {
-            Producto producto = productoRepository.findById(dvDTO.getProductoId())
-                    .orElseThrow(() -> new ProductoNotFoundException(dvDTO.getProductoId()));
-
-            if (producto.getStock() < dvDTO.getCantidad()) {
-                throw new StockInsuficienteException(
-                        producto.getNombre(),
-                        producto.getStock(),
-                        dvDTO.getCantidad()
-                );
-            }
-
-            // Descontar nuevo stock
-            producto.setStock(producto.getStock() - dvDTO.getCantidad());
-            productoRepository.save(producto);
+            Producto producto = productos.get(dvDTO.getProductoId());
 
             // Crear nuevo detalle
             double subtotal = producto.getPrecio() * dvDTO.getCantidad();
@@ -146,7 +118,6 @@ public class VentaServiceImpl implements IVentaService {
 
             venta.getDetalles().add(dv);
             
-            // 🔥 CORRECCIÓN AQUÍ: Sumar al acumulador
             acumuladorTotal += subtotal;
         }
 
@@ -179,14 +150,7 @@ public class VentaServiceImpl implements IVentaService {
         Venta venta = ventaRepository.findById(id)
                 .orElseThrow(() -> new VentaNotFoundException(id));
 
-        if (venta.getDetalles() != null) {
-            for (DetalleVenta dv : venta.getDetalles()) {
-                Producto p = productoRepository.findById(dv.getProducto().getId())
-                        .orElseThrow(() -> new ProductoNotFoundException(dv.getProducto().getId()));
-                p.setStock(p.getStock() + dv.getCantidad());
-                productoRepository.save(p);
-            }
-        }
+        stockService.restaurarStockParaDetalles(venta.getDetalles());
 
         ventaRepository.deleteById(id);
     }

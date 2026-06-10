@@ -11,15 +11,14 @@ import com.perfumeria.models.CodigoVerificacion;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.repositories.CodigoVerificacionRepository;
 import com.perfumeria.repositories.UsuarioRepository;
+import com.perfumeria.services.CodigoGeneracionService;
 import com.perfumeria.services.IEmailService;
 import com.perfumeria.services.IUsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,15 +26,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements IUsuarioService {
 
-    private static final SecureRandom RANDOM = new SecureRandom();
-    
     private final UsuarioRepository usuarioRepository;
     private final CodigoVerificacionRepository codigoVerificacionRepository;
+    private final CodigoGeneracionService codigoGeneracionService;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
-    
-    @Value("${verificacion.codigo.expiracion.minutos:15}")
-    private int minutosExpiracion;
 
     @Override
     public boolean verificarCredenciales(String username, String password) {
@@ -107,19 +102,13 @@ public class UsuarioServiceImpl implements IUsuarioService {
             throw new UsuarioAlreadyVerifiedException(username);
         }
         
-        codigoVerificacionRepository.deleteByUsername(username);
+        codigoGeneracionService.eliminarCodigosPorUsuario(username);
         generarYEnviarCodigo(usuario);
     }
     
     private void generarYEnviarCodigo(Usuario usuario) {
-        String codigo = String.format("%06d", RANDOM.nextInt(1_000_000));
-        
-        CodigoVerificacion codigoVerificacion = new CodigoVerificacion();
-        codigoVerificacion.setUsername(usuario.getUsername());
-        codigoVerificacion.setCodigo(codigo);
-        codigoVerificacion.setFechaExpiracion(LocalDateTime.now().plusMinutes(minutosExpiracion));
-        codigoVerificacion.setUsado(false);
-        codigoVerificacionRepository.save(codigoVerificacion);
+        codigoGeneracionService.eliminarCodigosPorUsuario(usuario.getUsername());
+        String codigo = codigoGeneracionService.generarCodigoVerificacion(usuario.getUsername());
 
         try {
             emailService.enviarCodigoVerificacion(
@@ -154,15 +143,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
         Usuario usuario = usuarioRepository.findByUsername(username)
             .orElseThrow(() -> new UsuarioNotFoundException(username));
 
-        codigoVerificacionRepository.deleteByUsername(username);
-
-        String codigo = String.format("%06d", RANDOM.nextInt(1_000_000));
-        CodigoVerificacion codigoVerificacion = new CodigoVerificacion();
-        codigoVerificacion.setUsername(username);
-        codigoVerificacion.setCodigo(codigo);
-        codigoVerificacion.setFechaExpiracion(LocalDateTime.now().plusMinutes(minutosExpiracion));
-        codigoVerificacion.setUsado(false);
-        codigoVerificacionRepository.save(codigoVerificacion);
+        codigoGeneracionService.eliminarCodigosPorUsuario(username);
+        String codigo = codigoGeneracionService.generarCodigoVerificacion(username);
 
         emailService.enviarCodigoRecuperacion(
             usuario.getEmail(),
