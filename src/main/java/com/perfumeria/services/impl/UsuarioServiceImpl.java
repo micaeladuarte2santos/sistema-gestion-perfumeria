@@ -1,7 +1,9 @@
 package com.perfumeria.services.impl;
 
+import com.perfumeria.exception.EmailSendingException;
 import com.perfumeria.exception.UsuarioAlreadyExistsException;
 import com.perfumeria.exception.UsuarioNotFoundException;
+import com.perfumeria.exception.UsuarioAlreadyVerifiedException;
 import com.perfumeria.exception.UsuarioEmailAlreadyExistsException;
 import com.perfumeria.exception.CodigoVerificacionInvalidoException;
 import com.perfumeria.exception.CodigoVerificacionExpiradoException;
@@ -100,7 +102,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
             .orElseThrow(() -> new UsuarioNotFoundException(username));
         
         if (usuario.isVerificado()) {
-            throw new RuntimeException("El usuario ya está verificado");
+            throw new UsuarioAlreadyVerifiedException(username);
         }
         
         codigoVerificacionRepository.deleteByUsername(username);
@@ -124,8 +126,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
                 usuario.getNombre() + " " + usuario.getApellido()
             );
         } catch (Exception e) {
-            // Imprimimos el error en consola para monitoreo
-            System.err.println("ERROR: No se pudo enviar el correo de verificación: " + e.getMessage());
+            throw new EmailSendingException(
+                "No se pudo enviar el correo de verificación al usuario " + usuario.getUsername(),
+                e
+            );
         }
     }
        

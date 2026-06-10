@@ -97,13 +97,13 @@ public class ProductoServiceImpl implements IProductoService {
     @Transactional(readOnly = true)
     public Producto obtenerPorId(Long id) {
     return productoRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        .orElseThrow(() -> new ProductoNotFoundException(id));
     }
 
     @Override
     public void inactivarProducto(Long id) {
         Producto producto = productoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+            .orElseThrow(() -> new ProductoNotFoundException(id));
 
         producto.setActivo(false);
 

@@ -1,25 +1,25 @@
 package com.perfumeria.controller;
 
+import com.perfumeria.dto.LoginRequestDTO;
 import com.perfumeria.dto.ReenviarCodigoRequestDTO;
 import com.perfumeria.dto.ResetPasswordRequestDTO;
 import com.perfumeria.dto.SolicitarResetPasswordDTO;
 import com.perfumeria.dto.UsuarioRequestDTO;
-import com.perfumeria.dto.UsuarioResponseDTO;
 import com.perfumeria.dto.VerificacionRequestDTO;
 import com.perfumeria.dto.mapper.UsuarioMapper;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.services.IUsuarioService;
-<<<<<<< HEAD
 import lombok.RequiredArgsConstructor;
-=======
-import com.perfumeria.repositories.UsuarioRepository; 
-import org.springframework.security.crypto.password.PasswordEncoder; 
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> master
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.perfumeria.dto.LoginRequestDTO;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,57 +29,43 @@ import java.util.Map;
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
-<<<<<<< HEAD
+
     private final IUsuarioService usuarioService;
     private final UsuarioMapper usuarioMapper;
-=======
-    
-    @Autowired
-    private IUsuarioService usuarioService;
-    
-    @Autowired
-    private UsuarioMapper usuarioMapper;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository; 
-
-    @Autowired
-    private PasswordEncoder passwordEncoder; 
->>>>>>> master
-    
     @PostMapping
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody UsuarioRequestDTO request) {
         Usuario usuario = usuarioMapper.toEntity(request);
         Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
-        
+
         Map<String, String> response = new HashMap<>();
         response.put("mensaje", "Usuario creado exitosamente. Se ha enviado un código de verificación a tu correo electrónico.");
         response.put("username", nuevoUsuario.getUsername());
         response.put("email", nuevoUsuario.getEmail());
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
     @PostMapping("/verificar")
     public ResponseEntity<Map<String, String>> verificarUsuario(@RequestBody VerificacionRequestDTO request) {
         usuarioService.verificarUsuario(request.getUsername(), request.getCodigo());
-        
+
         Map<String, String> response = new HashMap<>();
         response.put("mensaje", "Usuario verificado exitosamente. Ahora puedes iniciar sesión.");
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/reenviar-codigo")
     public ResponseEntity<Map<String, String>> reenviarCodigo(@RequestBody ReenviarCodigoRequestDTO request) {
         usuarioService.reenviarCodigoVerificacion(request.getUsername());
-        
+
         Map<String, String> response = new HashMap<>();
         response.put("mensaje", "Se ha reenviado un nuevo código de verificación a tu correo electrónico.");
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable String username) {
         usuarioService.eliminarUsuario(username);
@@ -89,7 +75,7 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         boolean esValido = usuarioService.verificarCredenciales(request.getUsername(), request.getPassword());
-        
+
         if (esValido) {
             Map<String, String> response = new HashMap<>();
             response.put("mensaje", "Login exitoso");
@@ -100,7 +86,6 @@ public class UsuarioController {
         }
     }
 
-    
     @GetMapping("/existe/{username}")
     public ResponseEntity<?> verificarExistencia(@PathVariable String username) {
         return usuarioService.existeUsuario(username)
@@ -126,7 +111,6 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    
     @PostMapping("/actualizar-password")
     public ResponseEntity<?> actualizarPassword(@RequestBody Map<String, String> datos) {
         String username = datos.get("username");
