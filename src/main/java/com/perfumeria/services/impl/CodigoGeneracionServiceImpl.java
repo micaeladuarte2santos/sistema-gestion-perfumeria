@@ -2,7 +2,7 @@ package com.perfumeria.services.impl;
 
 import com.perfumeria.models.CodigoVerificacion;
 import com.perfumeria.repositories.CodigoVerificacionRepository;
-import com.perfumeria.services.CodigoGeneracionService;
+import com.perfumeria.services.ICodigoGeneracionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class CodigoGeneracionServiceImpl implements CodigoGeneracionService {
+public class CodigoGeneracionServiceImpl implements ICodigoGeneracionService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private final CodigoVerificacionRepository codigoVerificacionRepository;

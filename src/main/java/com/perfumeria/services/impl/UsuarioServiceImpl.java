@@ -11,7 +11,7 @@ import com.perfumeria.models.CodigoVerificacion;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.repositories.CodigoVerificacionRepository;
 import com.perfumeria.repositories.UsuarioRepository;
-import com.perfumeria.services.CodigoGeneracionService;
+import com.perfumeria.services.ICodigoGeneracionService;
 import com.perfumeria.services.IEmailService;
 import com.perfumeria.services.IUsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CodigoVerificacionRepository codigoVerificacionRepository;
-    private final CodigoGeneracionService codigoGeneracionService;
+    private final ICodigoGeneracionService codigoGeneracionService;
     private final PasswordEncoder passwordEncoder;
     private final IEmailService emailService;
 

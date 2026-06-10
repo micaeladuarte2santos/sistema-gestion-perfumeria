@@ -11,7 +11,7 @@ import com.perfumeria.models.Venta;
 import com.perfumeria.repositories.DetalleVentaRepository;
 import com.perfumeria.repositories.VentaRepository;
 import com.perfumeria.services.IVentaService;
-import com.perfumeria.services.StockService;
+import com.perfumeria.services.IStockService;
 import com.perfumeria.models.EstadoVentaEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class VentaServiceImpl implements IVentaService {
 
     private final VentaRepository ventaRepository;
     private final DetalleVentaRepository detalleVentaRepository;
-    private final StockService stockService;
+    private final IStockService stockService;
 
     @Override
     public List<Venta> findByDia(LocalDate fecha) {

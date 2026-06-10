@@ -1,6 +1,8 @@
 document.getElementById('verificarForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const btnVerify = document.getElementById('btnVerify');
+    const loaderContainer = document.getElementById('loaderContainer');
     const codigoInput = document.getElementById('codigo');
     const codigoVal = codigoInput.value;
     const usernameVal = localStorage.getItem('usuarioPendiente');
@@ -19,6 +21,10 @@ document.getElementById('verificarForm').addEventListener('submit', async (e) =>
         username: usernameVal,
         codigo: codigoVal
     };
+
+    // Mostrar loader y deshabilitar botón
+    btnVerify.disabled = true;
+    loaderContainer.classList.add('active');
 
     try {
        
@@ -60,6 +66,10 @@ document.getElementById('verificarForm').addEventListener('submit', async (e) =>
            
             codigoInput.value = '';
             codigoInput.focus();
+            
+            // Ocultar loader y habilitar botón
+            btnVerify.disabled = false;
+            loaderContainer.classList.remove('active');
         }
 
     } catch (error) {
@@ -70,5 +80,9 @@ document.getElementById('verificarForm').addEventListener('submit', async (e) =>
             text: 'No se pudo conectar con el sistema. Inténtalo más tarde.',
             icon: 'error'
         });
+        
+        // Ocultar loader y habilitar botón
+        btnVerify.disabled = false;
+        loaderContainer.classList.remove('active');
     }
 });

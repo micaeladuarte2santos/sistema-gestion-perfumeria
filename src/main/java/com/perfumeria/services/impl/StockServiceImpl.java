@@ -6,7 +6,7 @@ import com.perfumeria.exception.StockInsuficienteException;
 import com.perfumeria.models.DetalleVenta;
 import com.perfumeria.models.Producto;
 import com.perfumeria.repositories.ProductoRepository;
-import com.perfumeria.services.StockService;
+import com.perfumeria.services.IStockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class StockServiceImpl implements StockService {
+public class StockServiceImpl implements IStockService {
 
     private final ProductoRepository productoRepository;
 

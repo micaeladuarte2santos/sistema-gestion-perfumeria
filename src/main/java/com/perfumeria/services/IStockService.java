@@ -7,7 +7,7 @@ import com.perfumeria.models.Producto;
 import java.util.List;
 import java.util.Map;
 
-public interface StockService {
+public interface IStockService {
     Map<Long, Producto> descontarStockPorDetalles(List<DetalleVentaRequestDTO> detalles);
     void restaurarStockParaDetalles(List<DetalleVenta> detalles);
 }

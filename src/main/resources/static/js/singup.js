@@ -1,6 +1,8 @@
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const btnRegister = document.getElementById('btnRegister');
+    const loaderContainer = document.getElementById('loaderContainer');
 
     const usernameVal = document.getElementById('username').value;
     const passwordVal = document.getElementById('password').value;
@@ -18,6 +20,10 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         email: emailVal,
         fechaNacimiento: fechaVal 
     };
+
+    // Mostrar loader y deshabilitar botón
+    btnRegister.disabled = true;
+    loaderContainer.classList.add('active');
 
     try {
         const response = await fetch('http://localhost:8080/usuarios', {
@@ -53,9 +59,17 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
                 icon: 'error',
                 confirmButtonText: 'Reintentar'
             });
+            
+            // Ocultar loader y habilitar botón
+            btnRegister.disabled = false;
+            loaderContainer.classList.remove('active');
         } 
     } catch (error) {
         console.error("Error de red:", error);
         alert("No se pudo conectar con el servidor.");
+        
+        // Ocultar loader y habilitar botón
+        btnRegister.disabled = false;
+        loaderContainer.classList.remove('active');
     }
 });
