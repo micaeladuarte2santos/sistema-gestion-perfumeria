@@ -4,20 +4,16 @@ import com.perfumeria.dto.ProductoRequestDTO;
 import com.perfumeria.dto.ProductoResponseDTO;
 import com.perfumeria.dto.mapper.ProductoMapper;
 import com.perfumeria.models.Producto;
-import com.perfumeria.services.impl.ProductoServiceImpl;
+import com.perfumeria.services.IProductoService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductoController {
 
-    private final ProductoServiceImpl productoService;
-
-    @Autowired
-    private ProductoMapper productoMapper;
-
-    @Value("${app.upload.dir}")
-    private String uploadDir;
+    private final IProductoService productoService;
+    private final ProductoMapper productoMapper;
 
 
     // OBTENER PRODUCTO POR ID
@@ -70,25 +61,7 @@ public class ProductoController {
             @RequestPart(value = "imagen", required = false) MultipartFile imagen) {
 
         Producto producto = productoMapper.toEntity(request);
-
-        if (imagen != null && !imagen.isEmpty()) {
-            try {
-
-                String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
-                Path ruta = Paths.get(uploadDir, nombreArchivo);
-
-                Files.createDirectories(ruta.getParent());
-                Files.copy(imagen.getInputStream(), ruta, StandardCopyOption.REPLACE_EXISTING);
-
-                producto.setImagen(nombreArchivo);
-
-            } catch (IOException e) {
-
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        }
-
-        Producto nuevo = productoService.crearProducto(producto);
+        Producto nuevo = productoService.crearProducto(producto, imagen);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -104,26 +77,7 @@ public class ProductoController {
 
         Producto producto = productoMapper.toEntity(request);
         producto.setId(id);
-
-        if (imagen != null && !imagen.isEmpty()) {
-
-            try {
-
-                String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
-                Path ruta = Paths.get(uploadDir, nombreArchivo);
-
-                Files.createDirectories(ruta.getParent());
-                Files.copy(imagen.getInputStream(), ruta, StandardCopyOption.REPLACE_EXISTING);
-
-                producto.setImagen(nombreArchivo);
-
-            } catch (IOException e) {
-
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        }
-
-        Producto actualizado = productoService.actualizarProducto(producto);
+        Producto actualizado = productoService.actualizarProducto(producto, imagen);
 
         return ResponseEntity.ok(productoMapper.toResponse(actualizado));
     }

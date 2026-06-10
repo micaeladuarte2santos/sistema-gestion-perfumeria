@@ -6,18 +6,15 @@ import com.perfumeria.dto.VentaRequestDTO;
 import com.perfumeria.dto.VentaResponseDTO;
 import com.perfumeria.dto.mapper.VentaMapper;
 import com.perfumeria.models.Venta;
-import com.perfumeria.services.impl.VentaServiceImpl;
+import com.perfumeria.services.IVentaService;
+import com.perfumeria.services.IVentaReporteService;
 
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.query.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +36,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 public class VentaController {
 
-    @Autowired
-    private VentaServiceImpl ventaService;
-    
-    @Autowired
-    private VentaMapper ventaMapper;
+    private final IVentaService ventaService;
+    private final IVentaReporteService ventaReporteService;
+    private final VentaMapper ventaMapper;
 
     @PostMapping
     public ResponseEntity<VentaResponseDTO> crearVenta(@RequestBody VentaRequestDTO request) {
@@ -100,7 +95,7 @@ public class VentaController {
 
     @GetMapping("/mes")
     public ResponseEntity<List<VentaResponseDTO>> getVentasPorMes(@RequestParam int mes, @RequestParam int anio) {
-        List<VentaResponseDTO> ventas = ventaService.findByMes(mes, anio).stream()
+        List<VentaResponseDTO> ventas = ventaReporteService.findByMes(mes, anio).stream()
             .map(ventaMapper::toResponse)
             .collect(Collectors.toList());
         return ResponseEntity.ok(ventas);
@@ -108,7 +103,7 @@ public class VentaController {
 
     @GetMapping("/anio")
     public ResponseEntity<List<VentaResponseDTO>> getVentasPorAnio(@RequestParam int anio) {
-        List<VentaResponseDTO> ventas = ventaService.findByAnio(anio).stream()
+        List<VentaResponseDTO> ventas = ventaReporteService.findByAnio(anio).stream()
             .map(ventaMapper::toResponse)
             .collect(Collectors.toList());
         return ResponseEntity.ok(ventas);
@@ -117,53 +112,53 @@ public class VentaController {
     @GetMapping("/recaudacion/dia")
     public ResponseEntity<Double> getRecaudacionPorDia(@RequestParam String fecha) {
         LocalDate date = LocalDate.parse(fecha);
-        return ResponseEntity.ok(ventaService.getRecaudacionPorDia(date));
+        return ResponseEntity.ok(ventaReporteService.getRecaudacionPorDia(date));
     }
 
     @GetMapping("/recaudacion/mes")
     public ResponseEntity<Double> getRecaudacionPorMes(@RequestParam int mes, @RequestParam int anio) {
-        return ResponseEntity.ok(ventaService.getRecaudacionPorMes(mes, anio));
+        return ResponseEntity.ok(ventaReporteService.getRecaudacionPorMes(mes, anio));
     }
 
     @GetMapping("/devoluciones/dia")
     public ResponseEntity<Long> getCantidadDevDia(@RequestParam String fecha) {
         return ResponseEntity.ok(
-            ventaService.getCantidadDevolucionesDia(LocalDate.parse(fecha))
+            ventaReporteService.getCantidadDevolucionesDia(LocalDate.parse(fecha))
         );
     }
 
     @GetMapping("/devoluciones/monto/dia")
     public ResponseEntity<Double> getMontoDevDia(@RequestParam String fecha) {
         return ResponseEntity.ok(
-            ventaService.getTotalDevolucionesDia(LocalDate.parse(fecha))
+            ventaReporteService.getTotalDevolucionesDia(LocalDate.parse(fecha))
         );
     }
 
     @GetMapping("/devoluciones/mes")
     public ResponseEntity<Long> getCantidadDevMes(@RequestParam int mes, @RequestParam int anio) {
         return ResponseEntity.ok(
-            ventaService.getCantidadDevolucionesMes(mes, anio)
+            ventaReporteService.getCantidadDevolucionesMes(mes, anio)
         );
     }
 
     @GetMapping("/devoluciones/monto/mes")
     public ResponseEntity<Double> getMontoDevMes(@RequestParam int mes, @RequestParam int anio) {
         return ResponseEntity.ok(
-            ventaService.getTotalDevolucionesMes(mes, anio)
+            ventaReporteService.getTotalDevolucionesMes(mes, anio)
         );
     }
 
     @GetMapping("/devoluciones/anio")
     public ResponseEntity<Long> getCantidadDevAnio(@RequestParam int anio) {
         return ResponseEntity.ok(
-            ventaService.getCantidadDevolucionesAnio(anio)
+            ventaReporteService.getCantidadDevolucionesAnio(anio)
         );
     }
 
     @GetMapping("/devoluciones/monto/anio")
     public ResponseEntity<Double> getMontoDevAnio(@RequestParam int anio) {
         return ResponseEntity.ok(
-            ventaService.getTotalDevolucionesAnio(anio)
+            ventaReporteService.getTotalDevolucionesAnio(anio)
         );
     }
 
@@ -181,6 +176,6 @@ public class VentaController {
 
     @GetMapping("/recaudacion/anio")
     public ResponseEntity<Double> getRecaudacionPorAnio(@RequestParam int anio) {
-        return ResponseEntity.ok(ventaService.getRecaudacionPorAnio(anio));
+        return ResponseEntity.ok(ventaReporteService.getRecaudacionPorAnio(anio));
     }
 }

@@ -1,9 +1,15 @@
 package com.perfumeria.services.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import com.perfumeria.exception.CategoriaNotFoundException;
 import com.perfumeria.exception.ProductoCodigoBarrasAlreadyExistsException;
 import com.perfumeria.exception.ProductoNotFoundException;
@@ -15,20 +21,18 @@ import com.perfumeria.repositories.CategoriaProductoRepository;
 import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.ProveedorRepository;
 import com.perfumeria.services.IProductoService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
-public class ProductoServiceImpl implements IProductoService{
+@RequiredArgsConstructor
+public class ProductoServiceImpl implements IProductoService {
 
-    @Autowired
-    private ProductoRepository productoRepository;
+    private final ProductoRepository productoRepository;
+    private final CategoriaProductoRepository categoriaRepository;
+    private final ProveedorRepository proveedorRepository;
 
-    @Autowired
-    private CategoriaProductoRepository categoriaRepository;
-    
-    @Autowired
-    private ProveedorRepository proveedorRepository;
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     @Override
     @Transactional
@@ -51,6 +55,36 @@ public class ProductoServiceImpl implements IProductoService{
         
         producto.setActivo(true);
         return productoRepository.save(producto);
+    }
+
+    @Override
+    @Transactional
+    public Producto crearProducto(Producto producto, MultipartFile imagen) {
+        if (imagen != null && !imagen.isEmpty()) {
+            producto.setImagen(storeImagen(imagen));
+        }
+        return crearProducto(producto);
+    }
+
+    @Override
+    @Transactional
+    public Producto actualizarProducto(Producto producto, MultipartFile imagen) {
+        if (imagen != null && !imagen.isEmpty()) {
+            producto.setImagen(storeImagen(imagen));
+        }
+        return actualizarProducto(producto);
+    }
+
+    private String storeImagen(MultipartFile imagen) {
+        try {
+            String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
+            Path ruta = Paths.get(uploadDir, nombreArchivo);
+            Files.createDirectories(ruta.getParent());
+            Files.copy(imagen.getInputStream(), ruta, StandardCopyOption.REPLACE_EXISTING);
+            return nombreArchivo;
+        } catch (IOException e) {
+            throw new RuntimeException("No se pudo almacenar la imagen del producto", e);
+        }
     }
 
     @Override

@@ -7,12 +7,9 @@ import com.perfumeria.dto.UsuarioRequestDTO;
 import com.perfumeria.dto.UsuarioResponseDTO;
 import com.perfumeria.dto.VerificacionRequestDTO;
 import com.perfumeria.dto.mapper.UsuarioMapper;
-import com.perfumeria.exception.UsuarioNotFoundException;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.services.IUsuarioService;
-import com.perfumeria.repositories.UsuarioRepository; // IMPORTANTE
-import org.springframework.security.crypto.password.PasswordEncoder; // IMPORTANTE
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +21,10 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
-    
-    @Autowired
-    private IUsuarioService usuarioService;
-    
-    @Autowired
-    private UsuarioMapper usuarioMapper;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository; // AGREGADO: Para solucionar el error de compilación
-
-    @Autowired
-    private PasswordEncoder passwordEncoder; // AGREGADO: Para poder encriptar la nueva clave
+    private final IUsuarioService usuarioService;
+    private final UsuarioMapper usuarioMapper;
     
     @PostMapping
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody UsuarioRequestDTO request) {
@@ -94,10 +82,9 @@ public class UsuarioController {
     // 1. Verificar existencia para resetPass1
     @GetMapping("/existe/{username}")
     public ResponseEntity<?> verificarExistencia(@PathVariable String username) {
-        if (usuarioRepository.existsByUsername(username)) { // Usamos tu método del repo
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return usuarioService.existeUsuario(username)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/password-reset/solicitar-codigo")
@@ -123,13 +110,9 @@ public class UsuarioController {
     public ResponseEntity<?> actualizarPassword(@RequestBody Map<String, String> datos) {
         String username = datos.get("username");
         String nuevoPassword = datos.get("nuevoPassword");
-        
-        Usuario usuario = usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new UsuarioNotFoundException(username));
-            
-        usuario.setPassword(passwordEncoder.encode(nuevoPassword));
-        usuarioRepository.save(usuario);
-        
+
+        usuarioService.actualizarPassword(username, nuevoPassword);
+
         return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada exitosamente"));
     }
 }

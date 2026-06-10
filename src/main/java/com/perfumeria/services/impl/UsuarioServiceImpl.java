@@ -11,7 +11,7 @@ import com.perfumeria.repositories.CodigoVerificacionRepository;
 import com.perfumeria.repositories.UsuarioRepository;
 import com.perfumeria.services.IEmailService;
 import com.perfumeria.services.IUsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,19 +22,13 @@ import java.util.Random;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UsuarioServiceImpl implements IUsuarioService {
     
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    
-    @Autowired
-    private CodigoVerificacionRepository codigoVerificacionRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @Autowired
-    private IEmailService emailService;
+    private final UsuarioRepository usuarioRepository;
+    private final CodigoVerificacionRepository codigoVerificacionRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final IEmailService emailService;
     
     @Value("${verificacion.codigo.expiracion.minutos:15}")
     private int minutosExpiracion;
@@ -45,6 +39,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return usuarioRepository.findByUsername(username)
                 .map(user -> passwordEncoder.matches(password, user.getPassword())) 
                 .orElse(false); 
+    }
+
+    @Override
+    public boolean existeUsuario(String username) {
+        return usuarioRepository.existsByUsername(username);
     }
     
     @Override

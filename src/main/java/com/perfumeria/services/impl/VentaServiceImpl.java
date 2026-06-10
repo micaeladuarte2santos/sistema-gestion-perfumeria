@@ -13,12 +13,9 @@ import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.VentaRepository;
 import com.perfumeria.services.IVentaService;
 import com.perfumeria.models.EstadoVentaEnum;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,27 +24,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VentaServiceImpl implements IVentaService {
 
-    @Autowired
-    private VentaRepository ventaRepository;
-
-    @Autowired
-    private ProductoRepository productoRepository;
-
-    @Autowired
-    private DetalleVentaRepository detalleVentaRepository;
+    private final VentaRepository ventaRepository;
+    private final ProductoRepository productoRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
 
     @Override
     public List<Venta> findByDia(LocalDate fecha) {
         LocalDateTime inicio = fecha.atStartOfDay();
         LocalDateTime fin = fecha.plusDays(1).atStartOfDay();
         return ventaRepository.findByFechaBetween(inicio, fin);
-    }
-
-    public Page<Venta> findAll(Pageable pageable) {
-        return ventaRepository.findAll(pageable);
     }
 
     @Override
@@ -201,113 +189,6 @@ public class VentaServiceImpl implements IVentaService {
         }
 
         ventaRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Venta> findByMes(int mes, int anio) {
-        return ventaRepository.findByMes(mes, anio);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Venta> findByAnio(int anio) {
-        return ventaRepository.findByAnio(anio);
-    }
-
-    // 💰 RECAUDACIÓN
-    @Override
-    @Transactional(readOnly = true)
-    public Double getRecaudacionPorDia(LocalDate fecha) {
-
-        LocalDateTime inicio = fecha.atStartOfDay();
-        LocalDateTime fin = fecha.plusDays(1).atStartOfDay();
-
-        return Optional.ofNullable(
-                ventaRepository.getRecaudacionPorDia(inicio, fin)
-        ).orElse(0.0);
-    }
-
-    // 🔥 DEVOLUCIONES
-    public Long getCantidadDevolucionesDia(LocalDate fecha) {
-
-        LocalDateTime inicio = fecha.atStartOfDay();
-        LocalDateTime fin = fecha.plusDays(1).atStartOfDay();
-
-        return Optional.ofNullable(
-                ventaRepository.countDevolucionesDia(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0L);
-    }
-
-    public Double getTotalDevolucionesDia(LocalDate fecha) {
-
-        LocalDateTime inicio = fecha.atStartOfDay();
-        LocalDateTime fin = fecha.plusDays(1).atStartOfDay();
-
-        return Optional.ofNullable(
-                ventaRepository.totalDevolucionesDia(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0.0);
-    }
-
-    public Long getCantidadDevolucionesMes(int mes, int anio) {
-
-        LocalDate inicioFecha = LocalDate.of(anio, mes, 1);
-        LocalDateTime inicio = inicioFecha.atStartOfDay();
-        LocalDateTime fin = inicioFecha.plusMonths(1).atStartOfDay();
-
-        return Optional.ofNullable(
-            ventaRepository.countDevolucionesMes(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0L);
-    }
-
-    public Double getTotalDevolucionesMes(int mes, int anio) {
-
-        LocalDate inicioFecha = LocalDate.of(anio, mes, 1);
-        LocalDateTime inicio = inicioFecha.atStartOfDay();
-        LocalDateTime fin = inicioFecha.plusMonths(1).atStartOfDay();
-
-        return Optional.ofNullable(
-            ventaRepository.totalDevolucionesMes(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0.0);
-    }
-
-
-    public Long getCantidadDevolucionesAnio(int anio) {
-
-        LocalDate inicioFecha = LocalDate.of(anio, 1, 1);
-        LocalDateTime inicio = inicioFecha.atStartOfDay();
-        LocalDateTime fin = inicioFecha.plusYears(1).atStartOfDay();
-
-        return Optional.ofNullable(
-            ventaRepository.countDevolucionesAnio(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0L);
-    }
-
-    public Double getTotalDevolucionesAnio(int anio) {
-
-        LocalDate inicioFecha = LocalDate.of(anio, 1, 1);
-        LocalDateTime inicio = inicioFecha.atStartOfDay();
-        LocalDateTime fin = inicioFecha.plusYears(1).atStartOfDay();
-
-        return Optional.ofNullable(
-            ventaRepository.totalDevolucionesAnio(inicio, fin, EstadoVentaEnum.DEVUELTA)
-        ).orElse(0.0);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Double getRecaudacionPorMes(int mes, int anio) {
-        return Optional.ofNullable(
-                ventaRepository.getRecaudacionPorMes(mes, anio)
-        ).orElse(0.0);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Double getRecaudacionPorAnio(int anio) {
-        return Optional.ofNullable(
-                ventaRepository.getRecaudacionPorAnio(anio)
-        ).orElse(0.0);
     }
 
     @Override
