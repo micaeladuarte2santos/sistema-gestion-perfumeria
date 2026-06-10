@@ -9,7 +9,13 @@ import com.perfumeria.dto.VerificacionRequestDTO;
 import com.perfumeria.dto.mapper.UsuarioMapper;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.services.IUsuarioService;
+<<<<<<< HEAD
 import lombok.RequiredArgsConstructor;
+=======
+import com.perfumeria.repositories.UsuarioRepository; 
+import org.springframework.security.crypto.password.PasswordEncoder; 
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> master
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +29,23 @@ import java.util.Map;
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
+<<<<<<< HEAD
     private final IUsuarioService usuarioService;
     private final UsuarioMapper usuarioMapper;
+=======
+    
+    @Autowired
+    private IUsuarioService usuarioService;
+    
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository; 
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; 
+>>>>>>> master
     
     @PostMapping
     public ResponseEntity<Map<String, String>> crearUsuario(@RequestBody UsuarioRequestDTO request) {
@@ -79,7 +100,7 @@ public class UsuarioController {
         }
     }
 
-    // 1. Verificar existencia para resetPass1
+    
     @GetMapping("/existe/{username}")
     public ResponseEntity<?> verificarExistencia(@PathVariable String username) {
         return usuarioService.existeUsuario(username)
@@ -105,7 +126,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    // 2. Cambiar la clave para resetPass2
+    
     @PostMapping("/actualizar-password")
     public ResponseEntity<?> actualizarPassword(@RequestBody Map<String, String> datos) {
         String username = datos.get("username");

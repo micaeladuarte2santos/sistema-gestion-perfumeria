@@ -45,7 +45,7 @@ function cargarVentas() {
 
       paginaActual = 1;
       aplicarFiltros();
-      actualizarResumenVentas(data); // 🔥 AGREGAR ESTA LÍNEA
+      actualizarResumenVentas(data); 
     })
     .catch(err => console.error("Error:", err));
 }
@@ -56,7 +56,7 @@ function renderizarPaginacion(totalItems, totalPaginas) {
 
   contenedor.innerHTML = "";
 
-  // botón anterior
+  
   const prev = document.createElement("button");
   prev.textContent = "Anterior";
   prev.disabled = paginaActual === 1;
@@ -67,7 +67,7 @@ function renderizarPaginacion(totalItems, totalPaginas) {
 
   contenedor.appendChild(prev);
 
-  // páginas
+  
   for (let i = 1; i <= totalPaginas; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
@@ -82,7 +82,7 @@ function renderizarPaginacion(totalItems, totalPaginas) {
     contenedor.appendChild(btn);
   }
 
-  // botón siguiente
+ 
   const next = document.createElement("button");
   next.textContent = "Siguiente";
   next.disabled = paginaActual === totalPaginas;
@@ -368,7 +368,7 @@ function bloquearEdicionVentaAbonada(overlay, form) {
   async function abrirAbmVenta(id = null) {
     await cargarProductos();
 
-    // 📦 Crear overlay
+  
     const tpl = document.getElementById("abmVentas");
     const overlay = document.createElement("div");
 
@@ -406,9 +406,9 @@ function bloquearEdicionVentaAbonada(overlay, form) {
       agregarFilaProducto(contenedor, totalInput);
     };
 
-    // =========================
-    // 🔥 CARGAR VENTA (EDICIÓN)
-    // =========================
+    
+    
+    
     if (id) {
       try {
         const res = await fetch(`http://localhost:8080/ventas/${id}`);
@@ -433,9 +433,9 @@ function bloquearEdicionVentaAbonada(overlay, form) {
       }
     }
 
-    // =========================
-    // 💾 GUARDAR
-    // =========================
+    
+   
+    
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 

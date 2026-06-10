@@ -24,7 +24,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             
 
         } else {
-            // Error de credenciales (401 Unauthorized)
+            
             Swal.fire({
                 icon: 'error',
                 title: 'Acceso Denegado',
@@ -36,7 +36,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error("Error de conexión:", error);
-        // Error de servidor o conexión
+        
         Swal.fire({
             icon: 'warning',
             title: 'Error de conexión',

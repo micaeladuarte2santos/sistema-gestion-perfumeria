@@ -16,7 +16,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         nombre: nombreVal,
         apellido: apellidoVal,
         email: emailVal,
-        fechaNacimiento: fechaVal // El input type="date" ya devuelve YYYY-MM-DD
+        fechaNacimiento: fechaVal 
     };
 
     try {
@@ -31,17 +31,17 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
         const resultado = await response.json();
 
         if (response.ok) {
-            // Reemplazamos el alert común por SweetAlert2
+           
             Swal.fire({
                 title: '¡Registro Exitoso!',
                 text: resultado.mensaje || 'Te hemos enviado un código de verificación.',
                 icon: 'success',
                 confirmButtonText: 'Ir a verificar',
                 confirmButtonColor: '#3085d6',
-                allowOutsideClick: false // Obliga a que den click al botón
+                allowOutsideClick: false 
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Guardamos el username y redirigimos
+                    
                     localStorage.setItem('usuarioPendiente', datos.username);
                     window.location.href = "verificarUsuario.html";
                 }

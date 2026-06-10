@@ -27,7 +27,7 @@ public class ProductoController {
     private final ProductoMapper productoMapper;
 
 
-    // OBTENER PRODUCTO POR ID
+    
     @GetMapping("/{id}")
     public ResponseEntity<ProductoResponseDTO> obtenerProductoPorId(@PathVariable Long id) {
 
@@ -49,8 +49,8 @@ public class ProductoController {
             return ResponseEntity.ok(productos);
 
         } catch (Exception e) {
-            e.printStackTrace(); // 🔥 esto te muestra el error real en consola
-            throw e; // vuelve a lanzar la excepción
+            e.printStackTrace(); 
+            throw e; 
         }
     }
 

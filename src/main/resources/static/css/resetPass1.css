@@ -3,7 +3,7 @@
     font-family: Arial, sans-serif;
 }
 
-/* Fondo */
+
 body {
     margin: 0;
     height: 100vh;
@@ -14,14 +14,14 @@ body {
     align-items: center;
 }
 
-/* Contenedor */
+
 .reset-container {
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
-/* Card */
+
 .reset-card {
     position: relative;
     background-color: #7898e8;
@@ -32,7 +32,7 @@ body {
     color: white;
 }
 
-/* Botón volver */
+
 .btn-back {
     position: absolute;
     top: 15px;
@@ -46,25 +46,25 @@ body {
     text-decoration: underline;
 }
 
-/* Icono */
+
 .icono {
     font-size: 50px;
     margin-bottom: 20px;
 }
 
-/* Título */
+
 h3 {
     margin: 0 0 10px;
 }
 
-/* Texto */
+
 .subtitle {
     font-size: 12px;
     margin-bottom: 20px;
     opacity: 0.9;
 }
 
-/* Input */
+
 .input-group {
     margin-bottom: 15px;
     text-align: left;
@@ -85,7 +85,7 @@ h3 {
     font-size: 14px;
 }
 
-/* Botón */
+
 button {
     width: 100%;
     padding: 10px;

@@ -11,7 +11,7 @@ document.getElementById('formReset2').addEventListener('submit', async (e) => {
         return;
     }
 
-    // Validar que coincidan
+  
     if (pass1 !== pass2) {
         Swal.fire('Error', 'Las contraseñas no coinciden.', 'warning');
         return;
