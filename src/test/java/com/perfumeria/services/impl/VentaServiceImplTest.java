@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,7 @@ import com.perfumeria.models.Venta;
 import com.perfumeria.repositories.DetalleVentaRepository;
 import com.perfumeria.repositories.ProductoRepository;
 import com.perfumeria.repositories.VentaRepository;
+import com.perfumeria.services.IStockService;
 
 @ExtendWith(MockitoExtension.class)
 class VentaServiceImplTest {
@@ -45,6 +47,9 @@ class VentaServiceImplTest {
 
     @Mock
     private DetalleVentaRepository detalleVentaRepository;
+
+    @Mock
+    private IStockService stockService;
 
     @InjectMocks
     private VentaServiceImpl ventaService;
@@ -92,28 +97,26 @@ class VentaServiceImplTest {
     @Test
     void testCreateVenta_Exitoso() {
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
-        when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
         when(detalleVentaRepository.save(any(DetalleVenta.class))).thenReturn(detalleVenta);
+        when(stockService.descontarStockPorDetalles(anyList())).thenReturn(Map.of(1L, producto));
 
         Venta resultado = ventaService.createVenta(ventaRequestDTO);
 
         assertNotNull(resultado);
         assertEquals(EstadoVentaEnum.PENDIENTE, resultado.getEstado());
         verify(ventaRepository, times(2)).save(any(Venta.class));
-        verify(productoRepository, times(1)).findById(producto.getId());
-        verify(productoRepository, times(1)).save(any(Producto.class));
         verify(detalleVentaRepository, times(1)).save(any(DetalleVenta.class));
+        verify(stockService, times(1)).descontarStockPorDetalles(anyList());
     }
 
     @Test
     void testCreateVenta_LanzaExcepcionCuandoProductoNoExiste() {
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
-        when(productoRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(stockService.descontarStockPorDetalles(anyList())).thenThrow(new ProductoNotFoundException(1L));
 
         assertThrows(ProductoNotFoundException.class, () -> ventaService.createVenta(ventaRequestDTO));
 
-        verify(productoRepository, times(1)).findById(producto.getId());
+        verify(stockService, times(1)).descontarStockPorDetalles(anyList());
         verify(productoRepository, never()).save(any(Producto.class));
     }
 
@@ -123,11 +126,11 @@ class VentaServiceImplTest {
         detalleVentaRequestDTO.setCantidad(5);
 
         when(ventaRepository.save(any(Venta.class))).thenReturn(venta);
-        when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
+        when(stockService.descontarStockPorDetalles(anyList())).thenThrow(new StockInsuficienteException("Stock insuficiente"));
 
         assertThrows(StockInsuficienteException.class, () -> ventaService.createVenta(ventaRequestDTO));
 
-        verify(productoRepository, times(1)).findById(producto.getId());
+        verify(stockService, times(1)).descontarStockPorDetalles(anyList());
         verify(productoRepository, never()).save(any(Producto.class));
     }
 
@@ -169,15 +172,13 @@ class VentaServiceImplTest {
     @Test
     void testDeleteById_EliminaYRestableceStock() {
         when(ventaRepository.findById(anyLong())).thenReturn(Optional.of(venta));
-        when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenReturn(producto);
+        doNothing().when(stockService).restaurarStockParaDetalles(anyList());
         doNothing().when(ventaRepository).deleteById(anyLong());
 
         ventaService.deleteById(1L);
 
         verify(ventaRepository, times(1)).findById(1L);
-        verify(productoRepository, times(1)).findById(producto.getId());
-        verify(productoRepository, times(1)).save(any(Producto.class));
+        verify(stockService, times(1)).restaurarStockParaDetalles(anyList());
         verify(ventaRepository, times(1)).deleteById(1L);
     }
 
@@ -217,9 +218,9 @@ class VentaServiceImplTest {
     @Test
     void testUpdateVenta_ActualizaDatosYStock() {
         when(ventaRepository.findByIdConDetalles(anyLong())).thenReturn(Optional.of(venta));
-        when(productoRepository.findById(anyLong())).thenReturn(Optional.of(producto));
-        when(productoRepository.save(any(Producto.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(ventaRepository.save(any(Venta.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doNothing().when(stockService).restaurarStockParaDetalles(anyList());
+        when(stockService.descontarStockPorDetalles(anyList())).thenReturn(Map.of(1L, producto));
 
         VentaRequestDTO updateRequest = new VentaRequestDTO();
         updateRequest.setNombreCliente("Cliente Actualizado");
@@ -239,8 +240,8 @@ class VentaServiceImplTest {
         assertEquals(1, resultado.getDetalles().size());
         assertEquals(100.0, resultado.getTotal());
         verify(ventaRepository, times(1)).findByIdConDetalles(1L);
-        verify(productoRepository, times(1)).findById(1L);
-        verify(productoRepository, times(2)).save(any(Producto.class));
+        verify(stockService, times(1)).restaurarStockParaDetalles(anyList());
+        verify(stockService, times(1)).descontarStockPorDetalles(anyList());
         verify(detalleVentaRepository, times(1)).deleteAll(anyList());
         verify(detalleVentaRepository, times(1)).saveAll(anyList());
         verify(ventaRepository, times(1)).save(any(Venta.class));

@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.perfumeria.exception.CodigoVerificacionExpiradoException;
 import com.perfumeria.exception.CodigoVerificacionInvalidoException;
@@ -26,6 +25,7 @@ import com.perfumeria.models.CodigoVerificacion;
 import com.perfumeria.models.Usuario;
 import com.perfumeria.repositories.CodigoVerificacionRepository;
 import com.perfumeria.repositories.UsuarioRepository;
+import com.perfumeria.services.ICodigoGeneracionService;
 import com.perfumeria.services.IEmailService;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +42,9 @@ class UsuarioServiceImplTest {
 
     @Mock
     private IEmailService emailService;
+
+    @Mock
+    private ICodigoGeneracionService codigoGeneracionService;
 
     @InjectMocks
     private UsuarioServiceImpl usuarioService;
@@ -64,9 +67,6 @@ class UsuarioServiceImplTest {
         codigoVerificacion.setCodigo("123456");
         codigoVerificacion.setFechaExpiracion(LocalDateTime.now().plusMinutes(15));
         codigoVerificacion.setUsado(false);
-
-        // Set the default value for minutosExpiracion
-        ReflectionTestUtils.setField(usuarioService, "minutosExpiracion", 15);
     }
 
     @Test
@@ -75,7 +75,8 @@ class UsuarioServiceImplTest {
         when(usuarioRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
-        when(codigoVerificacionRepository.save(any(CodigoVerificacion.class))).thenReturn(codigoVerificacion);
+        doNothing().when(codigoGeneracionService).eliminarCodigosPorUsuario(anyString());
+        when(codigoGeneracionService.generarCodigoVerificacion(anyString())).thenReturn("123456");
         doNothing().when(emailService).enviarCodigoVerificacion(anyString(), anyString(), anyString());
         Usuario resultado = usuarioService.crearUsuario(usuario);
         assertNotNull(resultado);
@@ -84,7 +85,8 @@ class UsuarioServiceImplTest {
         verify(usuarioRepository, times(1)).existsByEmail(usuario.getEmail());
         verify(passwordEncoder, times(1)).encode(anyString());
         verify(usuarioRepository, times(1)).save(any(Usuario.class));
-        verify(codigoVerificacionRepository, times(1)).save(any(CodigoVerificacion.class));
+        verify(codigoGeneracionService, times(1)).eliminarCodigosPorUsuario(anyString());
+        verify(codigoGeneracionService, times(1)).generarCodigoVerificacion(anyString());
         verify(emailService, times(1)).enviarCodigoVerificacion(anyString(), anyString(), anyString());
     }
 
@@ -199,15 +201,15 @@ class UsuarioServiceImplTest {
     @Test
     void testReenviarCodigoVerificacion_Exitoso() {
         when(usuarioRepository.findById(anyString())).thenReturn(Optional.of(usuario));
-        doNothing().when(codigoVerificacionRepository).deleteByUsername(anyString());
-        when(codigoVerificacionRepository.save(any(CodigoVerificacion.class))).thenReturn(codigoVerificacion);
+        doNothing().when(codigoGeneracionService).eliminarCodigosPorUsuario(anyString());
+        when(codigoGeneracionService.generarCodigoVerificacion(anyString())).thenReturn("123456");
         doNothing().when(emailService).enviarCodigoVerificacion(anyString(), anyString(), anyString());
         assertDoesNotThrow(() -> {
             usuarioService.reenviarCodigoVerificacion("testuser");
         });
         verify(usuarioRepository, times(1)).findById("testuser");
-        verify(codigoVerificacionRepository, times(1)).deleteByUsername("testuser");
-        verify(codigoVerificacionRepository, times(1)).save(any(CodigoVerificacion.class));
+        verify(codigoGeneracionService, times(2)).eliminarCodigosPorUsuario("testuser");
+        verify(codigoGeneracionService, times(1)).generarCodigoVerificacion("testuser");
         verify(emailService, times(1)).enviarCodigoVerificacion(anyString(), anyString(), anyString());
     }
 
